@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://svaf.org/schemas/events.schema.json",
+  "title": "SVAF Events Schema",
+  "description": "Schema for SVAF event timeline",
+  "type": "object",
+  "required": ["events"],
+  "properties": {
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["event_id", "type", "start_time"],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "pattern": "^[a-z_]+_\\d+$",
+            "description": "Unique event identifier (e.g., evt_001)"
+          },
+          "type": {
+            "type": "string",
+            "pattern": "^[a-z_]+\\.[a-z_]+$",
+            "description": "Event type (namespace.action, e.g., slide.change)"
+          },
+          "start_time": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Start time in seconds"
+          },
+          "end_time": {
+            "type": "number",
+            "minimum": 0,
+            "description": "End time in seconds (optional for instant events)"
+          },
+          "keyframe": {
+            "type": "string",
+            "description": "Relative path to keyframe image"
+          },
+          "identity_id": {
+            "type": "string",
+            "description": "Reference to identity (speaker/face)"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Event-specific metadata",
+            "additionalProperties": true
+          }
+        }
+      }
+    }
+  }
+}

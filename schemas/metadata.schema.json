@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://svaf.org/schemas/metadata.schema.json",
+  "title": "SVAF Metadata Schema",
+  "description": "Schema for SVAF container metadata",
+  "type": "object",
+  "required": [
+    "svaf_version",
+    "container_id",
+    "title",
+    "duration_seconds",
+    "primary_language",
+    "creation_date"
+  ],
+  "properties": {
+    "svaf_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "SVAF specification version (semver)"
+    },
+    "container_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique container identifier"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Container title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description"
+    },
+    "duration_seconds": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Content duration in seconds"
+    },
+    "primary_language": {
+      "type": "string",
+      "pattern": "^[a-z]{2}$",
+      "description": "Primary language (ISO 639-1)"
+    },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z]{2}$"
+      },
+      "description": "All available languages"
+    },
+    "creation_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Container creation timestamp (ISO 8601)"
+    },
+    "last_modified": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last modification timestamp (ISO 8601)"
+    },
+    "source": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["video", "audio", "podcast", "stream"],
+          "description": "Source type"
+        },
+        "original_file": {
+          "type": "string",
+          "description": "Original filename"
+        },
+        "original_duration": {
+          "type": "number",
+          "minimum": 0
+        },
+        "original_resolution": {
+          "type": "string",
+          "pattern": "^\\d+x\\d+$"
+        },
+        "original_size_bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "role"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["creator", "editor", "transcriber", "annotator"]
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Content tags"
+    },
+    "license": {
+      "type": "string",
+      "description": "Content license (e.g., CC-BY-4.0)"
+    }
+  }
+}
