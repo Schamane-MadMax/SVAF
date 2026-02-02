@@ -1,0 +1,9 @@
+{
+  "svaf_version": "0.1.0",
+  "container_id": "550e8400-e29b-41d4-a716-446655440000",
+  "title": "Minimal Test Container",
+  "description": "A minimal valid SVAF container for testing",
+  "duration_seconds": 60.0,
+  "primary_language": "en",
+  "creation_date": "2026-02-02T10:00:00Z"
+}
