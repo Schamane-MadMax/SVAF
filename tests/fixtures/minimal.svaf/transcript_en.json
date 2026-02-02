@@ -1,0 +1,20 @@
+{
+  "language": "en",
+  "format_version": "0.1.0",
+  "segments": [
+    {
+      "segment_id": "seg_001",
+      "start_time": 0.0,
+      "end_time": 5.0,
+      "text": "Hello, this is a test.",
+      "confidence": 0.98
+    },
+    {
+      "segment_id": "seg_002",
+      "start_time": 5.0,
+      "end_time": 10.0,
+      "text": "This is a minimal SVAF container.",
+      "confidence": 0.95
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "events": [
+    {
+      "event_id": "evt_001",
+      "type": "topic.start",
+      "start_time": 0.0,
+      "metadata": {
+        "title": "Introduction"
+      }
+    }
+  ]
+}
