@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://svaf.org/schemas/tracks.schema.json",
+  "title": "SVAF Tracks Schema",
+  "description": "Schema for SVAF multi-track audio (extension)",
+  "type": "object",
+  "required": ["tracks"],
+  "properties": {
+    "tracks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["track_id", "type", "language"],
+        "properties": {
+          "track_id": {
+            "type": "string",
+            "pattern": "^track_\\d+$",
+            "description": "Unique track identifier"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["audio", "video", "subtitle"],
+            "description": "Track type"
+          },
+          "language": {
+            "type": "string",
+            "pattern": "^[a-z]{2}$",
+            "description": "Track language (ISO 639-1)"
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable label"
+          },
+          "file_path": {
+            "type": "string",
+            "description": "Relative path to track file"
+          },
+          "codec": {
+            "type": "string",
+            "description": "Audio/video codec"
+          },
+          "channels": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Audio channels (1=mono, 2=stereo)"
+          },
+          "sample_rate": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Audio sample rate in Hz"
+          },
+          "bitrate": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Bitrate in bps"
+          },
+          "default": {
+            "type": "boolean",
+            "description": "Default track flag"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    }
+  }
+}

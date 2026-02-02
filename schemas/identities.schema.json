@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://svaf.org/schemas/identities.schema.json",
+  "title": "SVAF Identities Schema",
+  "description": "Schema for SVAF speaker and face identities",
+  "type": "object",
+  "required": ["identities"],
+  "properties": {
+    "identities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["identity_id", "type", "privacy_mode"],
+        "properties": {
+          "identity_id": {
+            "type": "string",
+            "pattern": "^[a-z_]+_\\d+$",
+            "description": "Unique identity identifier"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["speaker", "face", "person"],
+            "description": "Identity type"
+          },
+          "name": {
+            "type": ["string", "null"],
+            "description": "Real name (null if anonymous)"
+          },
+          "pseudonym": {
+            "type": "string",
+            "description": "Pseudonym for privacy"
+          },
+          "privacy_mode": {
+            "type": "string",
+            "enum": ["public", "pseudonymous", "anonymous", "redacted"],
+            "description": "Privacy mode"
+          },
+          "face_keyframes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Paths to face keyframes"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string"
+              },
+              "affiliation": {
+                "type": "string"
+              },
+              "bio": {
+                "type": "string"
+              },
+              "detected_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "first_appearance": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      }
+    }
+  }
+}

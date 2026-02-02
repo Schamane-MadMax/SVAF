@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://svaf.org/schemas/annotations.schema.json",
+  "title": "SVAF Annotations Schema",
+  "description": "Schema for SVAF human and machine annotations",
+  "type": "object",
+  "required": ["annotations"],
+  "properties": {
+    "annotations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["annotation_id", "type", "target", "author_type", "timestamp"],
+        "properties": {
+          "annotation_id": {
+            "type": "string",
+            "pattern": "^anno_\\d+$",
+            "description": "Unique annotation identifier"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["correction", "summary", "tag", "comment", "highlight"],
+            "description": "Annotation type"
+          },
+          "target": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["transcript", "event", "timerange", "keyframe", "container"]
+              },
+              "segment_id": {
+                "type": "string"
+              },
+              "event_id": {
+                "type": "string"
+              },
+              "start_time": {
+                "type": "number",
+                "minimum": 0
+              },
+              "end_time": {
+                "type": "number",
+                "minimum": 0
+              },
+              "keyframe_path": {
+                "type": "string"
+              }
+            }
+          },
+          "author_type": {
+            "type": "string",
+            "enum": ["human", "machine"],
+            "description": "Author type"
+          },
+          "author_id": {
+            "type": "string",
+            "description": "User ID or model name"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Annotation creation time"
+          },
+          "content": {
+            "type": "object",
+            "description": "Annotation-specific content",
+            "additionalProperties": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score (for machine annotations)"
+          }
+        }
+      }
+    }
+  }
+}
