@@ -1,0 +1,7 @@
+{
+  "events": [
+    {"t": 0.0, "type": "state_start", "state": "start"},
+    {"t": 2.03, "type": "speaker_change", "speaker_track": "spk:01", "identity_id": "p:spk_01"},
+    {"t": 83.2, "type": "slide_start", "asset": "slides/0001.webp"}
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "speaker_tracks": [
+    {
+      "track_id": "spk:01",
+      "identity_id": "p:spk_01",
+      "label": "SPEAKER_00",
+      "segments": [{"t_start": 2.03, "t_end": 44.9}],
+      "quality": {"source": "rttm"}
+    }
+  ]
+}

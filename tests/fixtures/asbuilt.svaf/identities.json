@@ -1,0 +1,16 @@
+{
+  "identities": [
+    {
+      "id": "p:spk_01",
+      "type": "person",
+      "display_name": "Speaker spk_01",
+      "tags": {"svaf:identity.role": "speaker", "svaf:identity.language": ["de"]}
+    },
+    {
+      "id": "p:spk_02",
+      "type": "person",
+      "display_name": "Speaker spk_02",
+      "tags": []
+    }
+  ]
+}
