@@ -40,6 +40,10 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
   Privacy-Regeln in `CONTRIBUTING.md` (keine echten Personendaten in
   Fixtures/Beispielen), PR-Template mit Datenschutz-Checkpunkt,
   Dependabot, `CITATION.cff`, CI-/Lizenz-Badges im README.
+- `docs/examples-media-entscheid.md`: Entscheidungsnotiz, warum `examples/`
+  mit echtem Audio zurückgestellt ist — geprüfte Quellen (öffentliche
+  Podcasts, Prominentenstimmen, NASA, media.ccc.de) mit Ablehnungsgründen
+  und die gangbaren Wege (Eigenaufnahme CC0, AMI Meeting Corpus).
 
 ## [0.5.0] — 2026-08-19
 
