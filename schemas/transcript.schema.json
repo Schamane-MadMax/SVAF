@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://svaf.org/schemas/transcript.schema.json",
+  "$id": "urn:svaf:schemas:transcript",
   "title": "SVAF Transcript Schema",
   "description": "Schema for the multilingual transcript layer (as built, format version 0.x)",
   "type": "object",

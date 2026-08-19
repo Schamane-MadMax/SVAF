@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://svaf.org/schemas/identities.schema.json",
+  "$id": "urn:svaf:schemas:identities",
   "title": "SVAF Identities Schema",
   "description": "Schema for the identity layer (as built, format version 0.x)",
   "type": "object",
@@ -31,7 +31,12 @@
             "oneOf": [
               {
                 "type": "object",
-                "additionalProperties": { "type": "string" }
+                "additionalProperties": {
+                  "oneOf": [
+                    { "type": "string" },
+                    { "type": "array", "items": { "type": "string" } }
+                  ]
+                }
               },
               {
                 "type": "array",
