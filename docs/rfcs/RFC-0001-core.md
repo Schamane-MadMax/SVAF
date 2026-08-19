@@ -2,9 +2,15 @@
 ## Semantic Video Analysis Format (SVAF)
 
 **Status:** Draft  
-**Version:** 0.4  
+**Version:** 0.5  
 **Category:** Proposed Standard  
-**Last Updated:** 2026-02-02  
+**Last Updated:** 2026-08-19  
+
+**Changes in 0.5:** The container inventory and all examples now describe the
+format as actually produced by the reference pipeline (validated against
+production containers). `ocr.json` is standardized; `speaker.rttm` and
+RAG export files are classified as sidecars; components that are specified
+but not yet produced by any implementation are marked as such.
 
 ---
 
@@ -96,28 +102,38 @@ A reference SVAF session is represented as a directory:
 
 ```text
 <session>.svaf/
-├── metadata.json
-├── audio.opus
-├── proxy.mkv
-├── transcript.json
-├── events.json
-├── identities.json
-├── tracks.json
-├── annotations.json
-├── slides/
-├── faces/
-├── metrics/        (optional)
-├── embeddings/     (optional, privacy-relevant)
-└── index/          (optional)
+├── metadata.json          (required)
+├── audio.opus             (required)
+├── transcript.json        (required)
+├── events.json            (required)
+├── tracks.json            (optional, recommended)
+├── identities.json        (optional, recommended)
+├── ocr.json               (optional)
+├── slides/                (optional)
+├── proxy.mkv              (optional)
+├── annotations.json       (specified, not yet produced)
+├── faces/                 (specified, not yet produced)
+├── metrics/               (specified, not yet produced)
+├── embeddings/            (specified, not yet produced; privacy-relevant)
+└── index/                 (specified, not yet produced)
 ```
 
 Notes:
-- `audio.opus` is REQUIRED.
-- `transcript.json` is REQUIRED.
-- `events.json` is REQUIRED.
-- `proxy.mkv` is OPTIONAL.
-- `metrics/`, `embeddings/`, and `index/` are OPTIONAL.
+- `audio.opus`, `transcript.json`, `events.json`, and `metadata.json` are REQUIRED.
+- `ocr.json` contains extracted text per slide keyframe (see schemas/ocr.schema.json).
+- Components marked "specified, not yet produced" are part of this specification
+  but are not written by any known implementation yet; readers MUST NOT rely on
+  their presence.
 - Future RFCs MAY define additional standardized files.
+
+Sidecars observed in practice (implementation-specific, non-normative):
+- `speaker.rttm` — raw diarization output the speaker tracks were derived from
+- `rag/` — retrieval export artifacts (chunk export, enrichment, ingestion state)
+- `_work/` — temporary pipeline working files; MUST be ignored by readers
+- `transcript_corrected.txt` — manually corrected plain-text transcript
+
+Sidecars follow the layer separation rule (section 3.4): compliant readers
+MUST function without them.
 
 ---
 
@@ -159,11 +175,11 @@ Example:
           "end": 148.4,
           "text": "Das ist der entscheidende Punkt",
           "words": [
-            {"w": "Das", "t": 142.1},
-            {"w": "ist", "t": 142.4},
-            {"w": "der", "t": 142.7},
-            {"w": "entscheidende", "t": 143.2},
-            {"w": "Punkt", "t": 144.6}
+            {"w": "Das", "start": 142.1, "end": 142.4, "prob": 0.99},
+            {"w": "ist", "start": 142.4, "end": 142.7, "prob": 0.98},
+            {"w": "der", "start": 142.7, "end": 143.2, "prob": 0.99},
+            {"w": "entscheidende", "start": 143.2, "end": 144.6, "prob": 0.97},
+            {"w": "Punkt", "start": 144.6, "end": 145.1, "prob": 0.99}
           ]
         }
       ]
@@ -213,7 +229,7 @@ Example:
     { "t": 0.0, "type": "state_start", "state": "intro" },
     { "t": 83.2, "type": "slide_start", "asset": "slides/0002.webp", "roi": "screen" },
     { "t": 146.8, "type": "mood_change", "identity_id": "p:markus" },
-    { "t": 210.0, "type": "speaker_change", "from": "p:markus", "to": "p:guest01" }
+    { "t": 210.0, "type": "speaker_change", "speaker_track": "spk:02", "identity_id": "p:guest01" }
   ]
 }
 ```
@@ -256,6 +272,22 @@ Properties:
 
 Normative note:
 - Proxy video MUST NOT be treated as the source of truth for content semantics.
+
+---
+
+### 5.5 Metadata (Required)
+
+File: `metadata.json`
+
+Role:
+- format version (`svaf_version`, major.minor)
+- source reference (path or URI of the original media)
+- creation timestamp (`created_utc`)
+- extraction configuration (audio, ASR, diarization, slides, OCR)
+- container-level privacy state (section 11)
+
+The authoritative field definitions are given by `schemas/metadata.schema.json`
+(RFC-0002).
 
 ---
 
@@ -560,22 +592,36 @@ Therefore privacy metadata is an explicit part of the format design.
 
 ---
 
-### 11.2 Example privacy metadata
+### 11.2 Privacy metadata
+
+Container-level privacy state lives in `metadata.json` under `privacy`
+(as produced by the reference pipeline):
+
+```json
+{
+  "privacy": {
+    "mode": "pseudonymous",
+    "biometrics": "absent",
+    "consent": "unknown",
+    "retention_days": null
+  }
+}
+```
+
+Recommended values:
+- `mode`: `public`, `pseudonymous`, `anonymous`, `restricted`
+- `biometrics`: `absent`, `present`, `encrypted`
+- `consent`: `unknown`, `given`, `denied`, `not_required`
+
+Identity-level privacy tags (`svaf:privacy.*` in `identities.json`) MAY
+additionally override the container-level state per identity:
 
 ```json
 {
   "svaf:privacy.mode": "pseudonymous",
-  "svaf:privacy.biometrics": "sidecar_encrypted",
-  "svaf:privacy.consent": "explicit",
-  "svaf:privacy.retention_days": 365
+  "svaf:privacy.consent": "explicit"
 }
 ```
-
-Recommended privacy values MAY include:
-- `none`
-- `pseudonymous`
-- `encrypted`
-- `sidecar_encrypted`
 
 Normative rules:
 - implementations handling biometric sidecars SHOULD expose privacy state clearly
@@ -719,9 +765,9 @@ Normative guidance:
 
 ---
 
-## 18. Planned follow-up RFCs
+## 18. Follow-up RFCs
 
-- **RFC-0002:** SVAF JSON Schema
-- **RFC-0003:** SVAF Query and Retrieval Model
-- **RFC-0004:** SVAF Reference Encoder / Converter
-- **RFC-0005:** SVAF Player Specification
+- **RFC-0002:** SVAF JSON Schema — published (see docs/rfcs/RFC-0002-json-schemas.md)
+- **RFC-0003:** SVAF Query and Retrieval Model — planned
+- **RFC-0004:** SVAF Reference Encoder / Converter — planned
+- **RFC-0005:** SVAF Player Specification — planned
