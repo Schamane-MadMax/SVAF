@@ -14,6 +14,13 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
 - **Alle Kern-Schemas** (metadata, transcript, events, tracks, identities) auf
   das As-built-Format umgestellt; validiert gegen reale Produktions-Container.
 
+- **RFC-0001 Kapitel 11.3**: DSGVO-Verantwortlichkeit, Art.-9-Einordnung
+  biometrischer Embeddings, Fail-closed-Regel bei fehlendem Consent
+  (Auflagen aus dem Rechts-Review). Beispiel-Identitäten pseudonymisiert.
+- `pyproject.toml`: erfundene Projekt-URLs durch das reale Repo ersetzt,
+  Platzhalter-E-Mail durch GitHub-noreply-Adresse.
+- `CODE_OF_CONDUCT.md`: Kontakt-Platzhalter durch GitHub-Issues ersetzt.
+
 ### Hinzugefügt
 - `schemas/ocr.schema.json` — Datei existierte in realen Containern, fehlte in
   der Spec.
