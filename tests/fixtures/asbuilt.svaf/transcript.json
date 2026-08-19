@@ -1,0 +1,23 @@
+{
+  "primary_language": "de",
+  "transcripts": [
+    {
+      "lang": "de",
+      "source": "asr",
+      "model": "large-v3",
+      "segments": [
+        {
+          "start": 2.03,
+          "end": 4.5,
+          "text": "Guten Tag und willkommen.",
+          "words": [
+            {"w": "Guten", "start": 2.03, "end": 2.4, "prob": 0.99},
+            {"w": "Tag", "start": 2.4, "end": 2.7, "prob": 0.98},
+            {"w": "und", "start": 2.9, "end": 3.1, "prob": 0.99},
+            {"w": "willkommen.", "start": 3.1, "end": 4.5, "prob": 0.97}
+          ]
+        }
+      ]
+    }
+  ]
+}

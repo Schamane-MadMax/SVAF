@@ -1,0 +1,13 @@
+{
+  "svaf_version": "0.4",
+  "source": "redacted://example/source.mp4",
+  "created_utc": "2026-08-19T12:00:00.000000Z",
+  "audio": {"codec": "opus", "sample_rate_hz": 48000},
+  "asr": {"model": "large-v3", "device": "cuda", "compute": "float16"},
+  "diarization": {"enabled": true},
+  "speaker_events": {"change_gap_sec": 0.6},
+  "index": {"enabled": false},
+  "slides": {"enabled": true, "interval_sec": 1.0, "diff_threshold": 0.2, "min_gap_sec": 2.0},
+  "ocr": {"enabled": true, "lang": "deu+eng"},
+  "privacy": {"mode": "pseudonymous", "biometrics": "absent", "consent": "unknown", "retention_days": null}
+}

@@ -1,0 +1,9 @@
+{
+  "model": "example/embedding-model",
+  "dim": 4,
+  "overlap_excluded": false,
+  "tracks": {
+    "p:spk_01": {"centroid": [0.1, -0.2, 0.3, 0.05], "speech_sec": 42.9, "n_segments": 1},
+    "p:spk_02": {"centroid": null, "speech_sec": 0.0, "n_segments": 0}
+  }
+}
