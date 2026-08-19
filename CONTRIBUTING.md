@@ -210,6 +210,25 @@ Add test containers in `tests/fixtures/`:
 
 - **GitHub Discussions**: For questions and ideas
 
+## Privacy and Data Protection
+
+SVAF deals with formats that can describe real people (voices, faces,
+speaker assignments). For contributions this means:
+
+- **Never include real personal data** in examples, fixtures, or tests —
+  no real names, voices, faces, e-mail addresses, or biometric artifacts.
+  Use synthetic data (see `tests/fixtures/asbuilt.svaf/`) and pseudonymous
+  IDs (`p:spk_01`, `Speaker A`).
+- **No internal paths or infrastructure details** in committed files or
+  commit messages; redact source paths (`redacted://...`).
+- Example media in `examples/` requires a verified license (CC0/CC BY) and
+  a documented consent basis for any recognizable person; embeddings and
+  face crops of real people are never accepted.
+- Changes to the privacy model (RFC-0001 section 11) require an RFC
+  changelog entry and should be flagged for legal review in the PR.
+- Prefer using a noreply address as your git author e-mail; the address in
+  your commits becomes public.
+
 ## License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
