@@ -61,10 +61,9 @@ all = [
 svaf = "svaf.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/svaf-project/svaf"
-Documentation = "https://svaf.org/docs"
-Repository = "https://github.com/svaf-project/svaf"
-Issues = "https://github.com/svaf-project/svaf/issues"
+Homepage = "https://github.com/Schamane-MadMax/SVAF"
+Repository = "https://github.com/Schamane-MadMax/SVAF"
+Issues = "https://github.com/Schamane-MadMax/SVAF/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
