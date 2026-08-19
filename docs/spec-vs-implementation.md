@@ -2,7 +2,7 @@
 
 Abgleich zwischen RFC-0001 v0.4 / RFC-0002 v1.0 (Schemas) und dem Format, das die
 youtube_mirror-Pipeline (`src/processors/svaf_*.py`) tatsächlich in Produktion schreibt.
-Datenbasis: drei reale Sessions unter `/mnt/yt/*/media/*/svaf/*.svaf/`, validiert mit
+Datenbasis: drei reale Produktions-Sessions (Archiv-Storage), validiert mit
 `jsonschema` (Draft 2020-12) gegen `schemas/*.schema.json`.
 
 **Ergebnis: Alle fünf Kerndateien scheitern in allen drei Sessions an den Schemas.**
