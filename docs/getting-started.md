@@ -1,3 +1,5 @@
+> **Veraltet / Outdated:** Dieses Dokument beschreibt noch das Ideal-Format vor dem Reality-first-Umbau. Maßgeblich sind [RFC-0001 v0.5](rfcs/RFC-0001-core.md) und die [JSON-Schemas](../schemas/). Beispiele hier validieren NICHT gegen die aktuellen Schemas.
+
 # Getting Started with SVAF
 
 ## Installation
@@ -11,7 +13,7 @@ pip install svaf
 ### From Source
 
 ```bash
-git clone https://github.com/svaf-project/svaf.git
+git clone https://github.com/Schamane-MadMax/SVAF.git
 cd svaf
 pip install -e .
 ```

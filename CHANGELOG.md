@@ -29,9 +29,30 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
 - `LICENSE` (MIT) — war in `pyproject.toml` deklariert, fehlte als Datei.
 - `CHANGELOG.md` (diese Datei).
 
+### Nach Review (Verifier, Code-Reviewer, Rechts-Review) nachgezogen
+- `schemas/embeddings.schema.json` neu: `embeddings.json` (Stimm-Embeddings,
+  biometrisch) wird real in ~37 % der Sessions erzeugt, war aber unspezifiziert;
+  RFC-0001 Kap. 4 und Fail-closed-Regel entsprechend erweitert.
+- `annotations.schema.json` an RFC-0001 §8 angeglichen (vorher beschrieben
+  Schema und RFC zwei verschiedene Zielformate).
+- Schema-`$id`s auf URN-Form (`urn:svaf:schemas:<name>`) umgestellt — die
+  bisherige Domain svaf.org gehört dem Projekt nicht.
+- `identities.tags` erlaubt String-Arrays (RFC-Beispiel §6.2), `tracks.json`
+  erlaubt reine Face-Track-Dateien (`anyOf`).
+- Redaktions-Hinweise wiederhergestellt: `metadata.source` kann interne Pfade,
+  OCR-Text kann personenbezogene Daten enthalten (§11.3).
+- Englisches README ist jetzt `README.md`; deutsche Fassung als `README.de.md`
+  mit Veraltet-Banner. Sekundärdoku (architecture, getting-started, examples,
+  DEVELOPER_GUIDE) trägt Veraltet-Banner statt stillschweigend falsch zu sein.
+- Klarstellung Lizenz: Der alte lokale RFC-Entwurf schlug CC-BY-4.0 für den
+  Spec-Text vor; auf GitHub ist der Stand seit März unter MIT veröffentlicht.
+  Dieses Repo bleibt einheitlich MIT (Besitzer-Entscheidung, dokumentiert).
+
 ### Bekannt offen
-- Python-Referenz-Lib (`src/svaf/`) implementiert noch das alte Ideal-Format
-  und validiert reale Container nicht; Umbau als separater Schritt geplant.
+- Python-Referenz-Lib (`src/svaf/`) implementiert noch das alte Ideal-Format;
+  `svaf validate` wendet die JSON-Schemas derzeit NICHT an (prüft nur
+  Dateipräsenz und JSON-Syntax) — im README ausgewiesen, Umbau als separater
+  Schritt geplant.
 - `annotations.json`, `faces/`, `metrics/`, `embeddings/`, `index/` sind
   spezifiziert, werden aber von keiner Implementierung erzeugt.
 
