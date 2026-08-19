@@ -2,71 +2,47 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://svaf.org/schemas/identities.schema.json",
   "title": "SVAF Identities Schema",
-  "description": "Schema for SVAF speaker and face identities",
+  "description": "Schema for the identity layer (as built, format version 0.x)",
   "type": "object",
   "required": ["identities"],
   "properties": {
     "identities": {
       "type": "array",
+      "description": "Stable identities referenced by tracks and events",
       "items": {
         "type": "object",
-        "required": ["identity_id", "type", "privacy_mode"],
+        "required": ["id", "type"],
         "properties": {
-          "identity_id": {
+          "id": {
             "type": "string",
-            "pattern": "^[a-z_]+_\\d+$",
-            "description": "Unique identity identifier"
+            "description": "Stable identity id, e.g. p:spk_01"
           },
           "type": {
             "type": "string",
-            "enum": ["speaker", "face", "person"],
-            "description": "Identity type"
+            "description": "Kind of identity",
+            "enum": ["person", "organization", "role", "unknown"]
           },
-          "name": {
-            "type": ["string", "null"],
-            "description": "Real name (null if anonymous)"
-          },
-          "pseudonym": {
+          "display_name": {
             "type": "string",
-            "description": "Pseudonym for privacy"
+            "description": "Human-readable name or pseudonym"
           },
-          "privacy_mode": {
-            "type": "string",
-            "enum": ["public", "pseudonymous", "anonymous", "redacted"],
-            "description": "Privacy mode"
-          },
-          "face_keyframes": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Paths to face keyframes"
-          },
-          "metadata": {
-            "type": "object",
-            "properties": {
-              "role": {
-                "type": "string"
+          "tags": {
+            "description": "Namespaced tags, e.g. svaf:identity.role. Canonical form is an object; an empty array occurs in existing containers and MUST be treated as 'no tags'.",
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": { "type": "string" }
               },
-              "affiliation": {
-                "type": "string"
-              },
-              "bio": {
-                "type": "string"
-              },
-              "detected_count": {
-                "type": "integer",
-                "minimum": 0
-              },
-              "first_appearance": {
-                "type": "number",
-                "minimum": 0
+              {
+                "type": "array",
+                "maxItems": 0
               }
-            },
-            "additionalProperties": true
+            ]
           }
-        }
+        },
+        "additionalProperties": true
       }
     }
-  }
+  },
+  "additionalProperties": true
 }
