@@ -1,6 +1,6 @@
 # SVAF – Semantic Video Analysis Format
 
-[![tests](https://github.com/Schamane-MadMax/SVAF/actions/workflows/tests.yml/badge.svg)](https://github.com/Schamane-MadMax/SVAF/actions/workflows/tests.yml)
+[![tests](https://github.com/svaf-project/SVAF/actions/workflows/tests.yml/badge.svg)](https://github.com/svaf-project/SVAF/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Spec](https://img.shields.io/badge/spec-v0.5%20draft-orange.svg)](docs/rfcs/RFC-0001-core.md)
 

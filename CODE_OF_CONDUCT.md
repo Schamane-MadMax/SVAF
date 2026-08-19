@@ -34,7 +34,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement privately to the maintainer (GitHub profile @Schamane-MadMax — use GitHub private vulnerability reporting or the contact options listed there).
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement privately via this repository's private vulnerability reporting (Security tab) or to the maintainer @Schamane-MadMax via the contact options on their GitHub profile.
 
 All complaints will be reviewed and investigated promptly and fairly.
 

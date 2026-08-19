@@ -13,7 +13,7 @@ pip install -e .  # aus dem Repo-Checkout; kein PyPI-Paket veroeffentlicht
 ### From Source
 
 ```bash
-git clone https://github.com/Schamane-MadMax/SVAF.git
+git clone https://github.com/svaf-project/SVAF.git
 cd svaf
 pip install -e .
 ```

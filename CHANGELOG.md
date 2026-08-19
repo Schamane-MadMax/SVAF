@@ -4,6 +4,12 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
 
 ## [Unreleased]
 
+### Geändert
+- Repo in die GitHub-Organisation `svaf-project` transferiert; alle
+  Projekt-URLs (pyproject, README, CITATION, CONTRIBUTING,
+  getting-started, CoC-Meldeweg) auf `svaf-project/SVAF` umgestellt.
+  Die alte URL leitet weiter.
+
 ### Hinzugefügt
 - Repo-Hygiene für den öffentlichen Betrieb: `SECURITY.md` (privater
   Meldeweg, ausdrücklich auch für Privacy-Schwächen im Format),

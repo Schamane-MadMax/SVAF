@@ -50,7 +50,7 @@ Enhancement suggestions are tracked as GitHub issues. Provide:
 
 ```bash
 # Clone repository
-git clone https://github.com/Schamane-MadMax/SVAF.git
+git clone https://github.com/svaf-project/SVAF.git
 cd svaf
 
 # Create virtual environment

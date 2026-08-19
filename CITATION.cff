@@ -4,7 +4,7 @@ title: "SVAF – Semantic Video Analysis Format"
 type: software
 authors:
   - name: "Schamane-MadMax"
-repository-code: "https://github.com/Schamane-MadMax/SVAF"
+repository-code: "https://github.com/svaf-project/SVAF"
 license: MIT
 version: "0.5"
 date-released: "2026-08-19"
