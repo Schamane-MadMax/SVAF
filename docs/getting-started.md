@@ -7,7 +7,7 @@
 ### From PyPI (when published)
 
 ```bash
-pip install svaf
+pip install -e .  # aus dem Repo-Checkout; kein PyPI-Paket veroeffentlicht
 ```
 
 ### From Source
@@ -22,16 +22,16 @@ pip install -e .
 
 ```bash
 # CLI tools with rich output
-pip install svaf[cli]
+pip install -e ".[cli]"
 
 # Processing capabilities
-pip install svaf[processing]
+pip install -e ".[processing]"
 
 # Transcription with Whisper
-pip install svaf[transcription]
+pip install -e ".[transcription]"
 
 # All features
-pip install svaf[all]
+pip install -e ".[all]"
 ```
 
 ## Quick Start

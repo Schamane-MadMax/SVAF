@@ -414,4 +414,4 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines.
 
 ---
 
-**Questions?** Open an issue on GitHub or join our Discord.
+**Questions?** Open an issue on GitHub.

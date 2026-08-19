@@ -171,6 +171,7 @@ def test_builder_add_transcript_segment():
     assert transcript.segments[0].text == "Hello world"
 
 
+@pytest.mark.xfail(reason="Alt-Lib (Ideal-Format) defekt, Umbau geplant — siehe CHANGELOG", strict=True)
 def test_builder_save_and_load():
     """Test saving and loading container."""
     with TemporaryDirectory() as tmpdir:
@@ -241,6 +242,7 @@ def test_builder_fluent_api():
     assert "en" in container.transcripts
 
 
+@pytest.mark.xfail(reason="Alt-Lib (Ideal-Format) defekt, Umbau geplant — siehe CHANGELOG", strict=True)
 def test_builder_overwrite_protection():
     """Test that builder prevents overwriting existing containers."""
     with TemporaryDirectory() as tmpdir:

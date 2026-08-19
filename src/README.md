@@ -1,83 +1,20 @@
-# SVAF Implementation
+# SVAF Reference Library (Python)
 
-**Status:** Placeholder - Implementation coming in Phase 2
+**Status:** predates the reality-first alignment of the schemas (RFC-0001 v0.5)
+and is being reworked. In particular, `svaf validate` does not yet apply the
+JSON schemas — see the repository README and CHANGELOG.
 
-## Planned Structure
+## Structure
 
 ```
 src/
-├── python/              # Python library
-│   ├── svaf/
-│   │   ├── __init__.py
-│   │   ├── builder.py   # SVAFBuilder class
-│   │   ├── parser.py    # Container parsing
-│   │   ├── validator.py # Schema validation
-│   │   └── rag.py       # RAG integration helpers
-│   └── setup.py
-├── typescript/          # TypeScript library
-│   ├── src/
-│   │   ├── builder.ts
-│   │   ├── parser.ts
-│   │   └── validator.ts
-│   └── package.json
-└── cli/                 # Command-line tools
-    └── svaf-cli.py      # CLI: svaf create/validate/export
+└── svaf/
+    ├── models.py     # Pydantic models (old ideal format)
+    ├── builder.py    # Container builder
+    ├── parser.py     # Container parsing
+    ├── validator.py  # Presence/syntax checks (schema application pending)
+    └── cli.py        # svaf command-line interface
 ```
 
-## MVP Scope (Phase 2)
-
-### Python Library
-- [ ] Container creation (`SVAFBuilder`)
-- [ ] Container parsing (`SVAFParser`)
-- [ ] JSON Schema validation
-- [ ] Whisper integration (transcription)
-- [ ] OpenCV slide detection
-- [ ] Basic event generation
-
-### CLI Tool
-- [ ] `svaf create video.mp4 -o output.svaf`
-- [ ] `svaf validate container.svaf`
-- [ ] `svaf export container.svaf --format=zip`
-- [ ] `svaf info container.svaf` (statistics)
-
-### Integration Targets
-- [ ] FFmpeg (audio extraction)
-- [ ] Whisper (transcription)
-- [ ] OpenCV (slide detection)
-- [ ] pyannote.audio (speaker diarization)
-
-## Installation (Future)
-
-```bash
-# Python
-pip install svaf
-
-# CLI
-svaf --version
-```
-
-## Usage Example (Future)
-
-```python
-from svaf import SVAFBuilder
-
-# Create SVAF container from video
-builder = SVAFBuilder("lecture.mp4")
-builder.extract_audio()
-builder.transcribe(language="de")
-builder.detect_slides(threshold=0.85)
-builder.save("lecture.svaf")
-
-# Parse existing container
-from svaf import SVAFParser
-
-parser = SVAFParser("lecture.svaf")
-container = parser.load()
-print(f"Duration: {container.metadata['duration_seconds']}s")
-print(f"Events: {len(container.events['events'])}")
-```
-
----
-
-**Current Phase:** RFC & Documentation
-**Next Phase:** MVP Implementation (Python library + CLI)
+For validating containers against the normative schemas today, use the
+`jsonschema` snippet in RFC-0002 section 6.

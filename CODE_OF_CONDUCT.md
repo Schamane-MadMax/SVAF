@@ -34,7 +34,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement via GitHub issues at https://github.com/Schamane-MadMax/SVAF/issues.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement privately to the maintainer (GitHub profile @Schamane-MadMax — use GitHub private vulnerability reporting or the contact options listed there).
 
 All complaints will be reviewed and investigated promptly and fairly.
 
