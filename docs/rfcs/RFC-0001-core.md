@@ -1,772 +1,727 @@
-# RFC SVAF-0001: Semantic Video Analysis Format - Core Specification
+# RFC SVAF-0001
+## Semantic Video Analysis Format (SVAF)
 
-**Version:** 0.4
-**Status:** Draft
-**Autor:** Markus (mit Claude Sonnet 4.5)
-**Datum:** 2025-01-15 (aktualisiert: 2026-02-02)
-
----
-
-## Abstract
-
-SVAF (Semantic Video Analysis Format) ist ein **audio-first, event-basiertes Container-Format** zur Speicherung semantisch relevanter Informationen aus Video- und Audio-Inhalten. Statt vollständiger Videostreams werden nur:
-
-- **Transkripte** (mit Timestamps, Speaker, Sprache)
-- **Events** (Slide-Wechsel, Topic-Changes, Face-Appearances)
-- **Keyframes** (Folien, Gesichter bei Mood-Change, ROI-Frames)
-- **Identitäten** (Speaker, Faces mit Privacy-Optionen)
-- **Annotations** (Mensch & Maschine)
-
-gespeichert. SVAF ist optimiert für **RAG-Systeme** (Retrieval-Augmented Generation), Wissensdatenbanken und Content-Archivierung.
+**Status:** Draft  
+**Version:** 0.4  
+**Category:** Proposed Standard  
+**Last Updated:** 2026-02-02  
 
 ---
 
-## 1. Motivation
+## 1. Abstract
 
-### 1.1 Probleme bestehender Formate
+This document specifies the **Semantic Video Analysis Format (SVAF)**, an open, event-based format for transforming audiovisual media into **machine-readable knowledge representations** with minimal storage overhead.
 
-| Format | Problem |
-|--------|---------|
-| **Full-Video (MP4/MKV)** | Teuer zu speichern (~2 GB/Stunde), nicht durchsuchbar |
-| **Transkripte (TXT)** | Kein Timing, keine Speaker-Info, keine Bilder |
-| **Untertitel (SRT/WebVTT)** | Nur Text, keine Semantik, kein Event-Konzept |
-| **Podcast-Metadaten (RSS)** | Keine granularen Events, keine Slides |
-| **YouTube-Chapters** | Manuell, grob, nicht maschinenlesbar |
+SVAF is explicitly designed to make content from video, audio, and recorded sessions usable for:
+- analysis
+- search
+- retrieval
+- Retrieval-Augmented Generation (RAG)
+- knowledge systems
+- downstream AI pipelines
 
-### 1.2 SVAF-Design-Ziele
-
-1. **RAG-First**: Perfekt für KI-Wissensdatenbanken
-2. **Speicher-effizient**: 50-200 MB statt 2 GB (Full-Video)
-3. **Audio-First**: Podcasts ohne Video möglich
-4. **Event-basiert**: Strukturierte Timeline statt Freitext
-5. **Durchsuchbar**: Volltextsuche + Event-Queries
-6. **Versionierbar**: Git-freundlich (Ordner, nicht ZIP)
-7. **Privacy-aware**: Optionale Face-Keyframes, Pseudonyme
-8. **Erweiterbar**: Core + Extensions + Sidecar-Dateien
+SVAF is **not a conventional playback-oriented media container**.  
+It is a **knowledge extraction and representation format for audiovisual sources**.
 
 ---
 
-## 2. Container-Struktur
+## 2. Goals
 
-SVAF ist ein **Ordner-Container** (nicht ZIP/TAR), um Git-freundlich zu sein.
+SVAF has three primary goals:
 
-### 2.1 Minimale Struktur
+### 2.1 Machine availability
+Content should be structured, indexable, semantically addressable, and directly usable for:
+- RAG systems
+- LLMs
+- search engines
+- graph systems
+- analytics pipelines
 
-```
-video.svaf/
-├── metadata.json           # Pflicht
-├── events.json             # Pflicht
-├── transcript_de.json      # Pflicht (mind. 1 Sprache)
-└── keyframes/              # Optional
-    └── slide_001.jpg
-```
+### 2.2 Storage efficiency
+Full-resolution continuous video should not be the primary knowledge representation.
 
-### 2.2 Vollständige Struktur
+Storage should focus on what is semantically relevant:
+- audio
+- text
+- events
+- identities
+- annotations
+- visual evidence such as keyframes, slides, overlays, or face crops
 
-```
-video.svaf/
-├── metadata.json           # Container-Metadaten
-├── events.json             # Event-Timeline
-├── transcript_de.json      # Transkript (Deutsch)
-├── transcript_en.json      # Transkript (Englisch)
-├── identities.json         # Speaker/Face-Definitionen
-├── tracks.json             # Multi-Track Audio (optional)
-├── annotations.json        # Mensch/Maschine-Annotationen
-├── keyframes/              # Extrahierte Bilder
-│   ├── slide_001.jpg
-│   ├── slide_002.jpg
-│   ├── face_speaker1_001.jpg
-│   └── roi_123.jpg
-├── proxy/                  # Optional: Low-Res-Video
-│   └── proxy_360p.mp4
-└── sidecar/                # Erweiterungen (nicht im Core)
-    ├── quiz_questions.json
-    └── sentiment.json
-```
+### 2.3 Traceability and extensibility
+SVAF should support:
+- versioned annotations
+- multilingual representations
+- reproducible extraction pipelines
+- extensible metadata and event models
+- optional advanced analysis layers
+
+> SVAF is not a movie archive format.  
+> SVAF is a knowledge extraction format for media.
 
 ---
 
-## 3. Core-Dateien
+## 3. Design principles (Normative)
 
-### 3.1 `metadata.json` (Pflicht)
+### 3.1 Audio-first
+Audio is the source of truth for time alignment.  
+All timeline references MUST be addressable against the audio timeline.
 
-Container-weite Metadaten.
+### 3.2 State- and event-based representation
+SVAF does not model content as a continuous frame stream.  
+States change only when semantically relevant events occur.
+
+### 3.3 Semantics before pixels
+The format prioritizes meaning over visual continuity:
+- faces represent identity or speaker evidence
+- slides represent content-bearing visual states
+- overlays represent contextual enrichments
+- background detail is secondary unless semantically relevant
+
+### 3.4 Layer separation
+SVAF separates:
+- **Core**: stable, compact, interoperable
+- **Extensions**: structured analysis data
+- **Sidecars**: model-specific or vendor-specific outputs
+
+### 3.5 Machine- and human-readable structure
+SVAF SHOULD use structured JSON plus referenced assets.  
+The format SHOULD remain deterministic, versionable, portable, and inspectable.
+
+---
+
+## 4. Container structure (Reference)
+
+A reference SVAF session is represented as a directory:
+
+```text
+<session>.svaf/
+├── metadata.json
+├── audio.opus
+├── proxy.mkv
+├── transcript.json
+├── events.json
+├── identities.json
+├── tracks.json
+├── annotations.json
+├── slides/
+├── faces/
+├── metrics/        (optional)
+├── embeddings/     (optional, privacy-relevant)
+└── index/          (optional)
+```
+
+Notes:
+- `audio.opus` is REQUIRED.
+- `transcript.json` is REQUIRED.
+- `events.json` is REQUIRED.
+- `proxy.mkv` is OPTIONAL.
+- `metrics/`, `embeddings/`, and `index/` are OPTIONAL.
+- Future RFCs MAY define additional standardized files.
+
+---
+
+## 5. Core components
+
+### 5.1 Audio (Required)
+
+File: `audio.opus`
+
+Role:
+- master time reference
+- primary speech and discourse source
+- basis for transcription and diarization alignment
+
+Recommendation:
+- Opus
+- 48 kHz
+- speech-optimized bitrate
+
+---
+
+### 5.2 Transcript layer (Required, multilingual)
+
+`transcript.json` MUST support multiple language variants.
+
+Example:
 
 ```json
 {
-  "svaf_version": "0.1.0",
-  "container_id": "uuid-v4-here",
-  "title": "SVAF Einführung",
-  "description": "Erklärvideo zum Semantic Video Analysis Format",
-  "duration_seconds": 3600,
   "primary_language": "de",
-  "languages": ["de", "en"],
-  "creation_date": "2025-01-15T10:00:00Z",
-  "last_modified": "2025-01-16T14:30:00Z",
-  "source": {
-    "type": "video",
-    "original_file": "video.mp4",
-    "original_duration": 3605,
-    "original_resolution": "1920x1080",
-    "original_size_bytes": 2147483648
-  },
-  "authors": [
+  "transcripts": [
     {
-      "name": "Max Mustermann",
-      "role": "creator"
-    }
-  ],
-  "tags": ["tutorial", "svaf", "knowledge-management"],
-  "license": "CC-BY-4.0"
-}
-```
-
-**Felder:**
-- `svaf_version`: Spec-Version (Semantic Versioning)
-- `container_id`: UUID für Referenzierung
-- `duration_seconds`: Dauer des Inhalts (nicht Original-Video!)
-- `primary_language`: Haupt-Transkript-Sprache (ISO 639-1)
-- `source.type`: `video`, `audio`, `podcast`, `stream`
-
-### 3.2 `events.json` (Pflicht)
-
-Event-Timeline - das Herzstück von SVAF.
-
-```json
-{
-  "events": [
-    {
-      "event_id": "evt_001",
-      "type": "slide.change",
-      "start_time": 120.5,
-      "end_time": 245.0,
-      "keyframe": "keyframes/slide_001.jpg",
-      "metadata": {
-        "slide_number": 1,
-        "title": "Einführung",
-        "ocr_text": "SVAF: Semantic Video Analysis Format",
-        "confidence": 0.98
-      }
+      "lang": "de",
+      "source": "asr",
+      "model": "whisper-large-v3",
+      "segments": [
+        {
+          "start": 142.1,
+          "end": 148.4,
+          "text": "Das ist der entscheidende Punkt",
+          "words": [
+            {"w": "Das", "t": 142.1},
+            {"w": "ist", "t": 142.4},
+            {"w": "der", "t": 142.7},
+            {"w": "entscheidende", "t": 143.2},
+            {"w": "Punkt", "t": 144.6}
+          ]
+        }
+      ]
     },
     {
-      "event_id": "evt_002",
-      "type": "topic.change",
-      "start_time": 245.0,
-      "end_time": 580.0,
-      "metadata": {
-        "topic": "Container-Struktur",
-        "keywords": ["ordner", "git", "versionierung"]
-      }
-    },
-    {
-      "event_id": "evt_003",
-      "type": "face.appearance",
-      "start_time": 0.0,
-      "end_time": 120.0,
-      "identity_id": "speaker_1",
-      "keyframe": "keyframes/face_speaker1_001.jpg",
-      "metadata": {
-        "mood": "neutral",
-        "confidence": 0.92
-      }
+      "lang": "en",
+      "source": "translation",
+      "model": "mt-v1",
+      "segments": [
+        {
+          "start": 142.1,
+          "end": 148.4,
+          "text": "This is the decisive point"
+        }
+      ]
     }
   ]
 }
 ```
 
-**Event-Felder:**
-- `event_id`: Eindeutige ID (z.B. `evt_001`)
-- `type`: Event-Typ (siehe 3.2.1)
-- `start_time`: Beginn (Sekunden, Float)
-- `end_time`: Ende (optional bei Instant-Events)
-- `keyframe`: Pfad zu Bild (relativ zum Container)
-- `identity_id`: Referenz zu `identities.json`
-- `metadata`: Event-spezifische Daten
+Normative rules:
+- The original language SHOULD be preserved whenever available.
+- Transcript variants MUST be language-tagged.
+- Time alignment MUST refer to the same master timeline.
+- Translated variants MAY be less granular than the original transcript.
+- Word-level timing SHOULD be present for at least one primary transcript variant when technically feasible.
 
-#### 3.2.1 Standard-Event-Typen
+Rationale:
+- multilingual search
+- multilingual retrieval
+- translation-aware downstream RAG
+- human and machine inspection
 
-| Event-Typ | Beschreibung | Pflichtfelder | Optional |
-|-----------|--------------|---------------|----------|
-| `slide.change` | Folienwechsel | `keyframe` | `slide_number`, `title` |
-| `topic.change` | Themenwechsel | `start_time` | `topic`, `keywords` |
-| `face.appearance` | Gesicht erscheint | `identity_id` | `keyframe`, `mood` |
-| `face.mood_change` | Stimmungswechsel | `identity_id`, `keyframe` | `mood_from`, `mood_to` |
-| `speaker.change` | Sprecher wechselt | `identity_id` | - |
-| `roi.detected` | ROI (Chart/Code) | `keyframe` | `roi_type`, `bbox` |
-| `chapter.start` | Kapitel-Beginn | `title` | `chapter_number` |
-| `scene.change` | Szenenwechsel | - | `scene_type` |
+---
 
-**Erweiterbar**: Custom-Types erlaubt (z.B. `quiz.question`, `ad.break`)
+### 5.3 Events (Required)
 
-### 3.3 `transcript_XX.json` (Pflicht, mind. 1)
+`events.json` is the semantic heart of SVAF.
 
-Transkript mit Timestamps, Speaker, Sprache.
+Events describe semantically relevant changes and markers in time.
+
+Example:
 
 ```json
 {
-  "language": "de",
-  "format_version": "0.1.0",
-  "segments": [
-    {
-      "segment_id": "seg_001",
-      "start_time": 0.0,
-      "end_time": 5.2,
-      "speaker_id": "speaker_1",
-      "text": "Willkommen zu SVAF - dem Semantic Video Analysis Format.",
-      "confidence": 0.95,
-      "words": [
-        {"word": "Willkommen", "start": 0.0, "end": 0.6},
-        {"word": "zu", "start": 0.7, "end": 0.8},
-        {"word": "SVAF", "start": 0.9, "end": 1.3}
-      ]
-    },
-    {
-      "segment_id": "seg_002",
-      "start_time": 5.2,
-      "end_time": 10.8,
-      "speaker_id": "speaker_1",
-      "text": "In diesem Video erkläre ich die Container-Struktur.",
-      "confidence": 0.92
-    }
-  ],
-  "metadata": {
-    "transcription_engine": "whisper-large-v3",
-    "transcription_date": "2025-01-15T12:00:00Z",
-    "word_level_timestamps": true
-  }
+  "events": [
+    { "t": 0.0, "type": "state_start", "state": "intro" },
+    { "t": 83.2, "type": "slide_start", "asset": "slides/0002.webp", "roi": "screen" },
+    { "t": 146.8, "type": "mood_change", "identity_id": "p:markus" },
+    { "t": 210.0, "type": "speaker_change", "from": "p:markus", "to": "p:guest01" }
+  ]
 }
 ```
 
-**Felder:**
-- `language`: ISO 639-1 Code (z.B. `de`, `en`, `fr`)
-- `segments[]`: Array von Sprach-Segmenten
-- `speaker_id`: Referenz zu `identities.json`
-- `words[]`: Optional, word-level timestamps (für bessere RAG-Suche)
+Normative event properties:
+- `t` MUST represent a timestamp on the master timeline
+- `type` MUST identify the event class
+- additional fields MAY be event-type-specific
+- unknown event types MUST be ignored gracefully by compliant readers
 
-**Multi-Language:**
-- `transcript_de.json` + `transcript_en.json` für mehrsprachige Videos
-- `segments[].language` für Code-Switching innerhalb eines Transkripts
+Standard event types (initial set):
+- `state_start`
+- `slide_start`
+- `overlay_start`
+- `overlay_end`
+- `speaker_change`
+- `speaker_active`
+- `speaker_inactive`
+- `mood_change`
+- `topic_shift`
+- `keyword_peak`
 
-### 3.4 `identities.json` (Optional, aber empfohlen)
+Future RFCs MAY define additional event classes and schemas.
 
-Definition von Sprechern und Gesichtern.
+---
+
+### 5.4 Proxy video (Optional, recommended)
+
+File: `proxy.mkv`
+
+Role:
+- human orientation
+- visual debugging
+- timeline navigation aid in the player
+
+Properties:
+- low frame rate
+- reduced resolution
+- strongly compressed
+
+Normative note:
+- Proxy video MUST NOT be treated as the source of truth for content semantics.
+
+---
+
+## 6. Identity layer
+
+### 6.1 Motivation
+
+Audiovisual knowledge often depends on:
+- who is speaking
+- who is visible
+- what role a person has
+- what context or event they belong to
+
+SVAF therefore includes an identity layer inspired by EXIF-style tagged metadata.
+
+---
+
+### 6.2 Identities
+
+`identities.json` contains real, pseudonymous, or anonymous identities.
+
+Example:
 
 ```json
 {
   "identities": [
     {
-      "identity_id": "speaker_1",
-      "type": "speaker",
-      "name": "Max Mustermann",
-      "pseudonym": "Sprecher A",
-      "privacy_mode": "public",
-      "metadata": {
-        "role": "presenter",
-        "affiliation": "Universität XYZ",
-        "bio": "Professor für Informatik"
-      }
-    },
-    {
-      "identity_id": "face_unknown_1",
-      "type": "face",
-      "name": null,
-      "pseudonym": "Person B",
-      "privacy_mode": "pseudonymous",
-      "face_keyframes": [
-        "keyframes/face_unknown_1_001.jpg"
-      ],
-      "metadata": {
-        "detected_count": 5,
-        "first_appearance": 120.5
+      "id": "p:markus",
+      "type": "person",
+      "display_name": "Markus",
+      "tags": {
+        "svaf:identity.role": "speaker",
+        "svaf:identity.language": ["de"],
+        "svaf:context.event": "SVAF Talk",
+        "svaf:context.project": "SVAF Standardization"
       }
     }
   ]
 }
 ```
 
-**Privacy-Modi:**
-- `public`: Name und Bilder öffentlich
-- `pseudonymous`: Pseudonym verwenden, Bilder optional
-- `anonymous`: Keine Keyframes, nur Speaker-ID
+Normative rules:
+- each identity MUST have a stable `id`
+- identities MAY be pseudonymous
+- `tags` SHOULD use namespaced keys
+- implementations MUST ignore unknown tags gracefully
 
-### 3.5 `annotations.json` (Optional)
+Recommended tag families:
+- `svaf:identity.*`
+- `svaf:context.*`
+- `svaf:geo.*`
+- `svaf:privacy.*`
 
-Mensch- und Maschinen-Annotationen.
+Examples:
+- `svaf:identity.role`
+- `svaf:identity.language`
+- `svaf:context.event`
+- `svaf:geo.recording.place_name`
+- `svaf:privacy.mode`
+
+---
+
+## 7. Speaker and face tracks
+
+### 7.1 Motivation
+
+Speech and visual identity evidence should be represented as time-bounded tracks.
+
+This allows:
+- diarization
+- speaker-specific retrieval
+- face-to-speaker linking
+- confidence-aware analysis
+
+---
+
+### 7.2 Speaker tracks
+
+Example:
+
+```json
+{
+  "speaker_tracks": [
+    {
+      "track_id": "spk:01",
+      "identity_id": "p:markus",
+      "segments": [
+        { "t_start": 12.4, "t_end": 48.9, "confidence": 0.94 },
+        { "t_start": 62.1, "t_end": 98.0, "confidence": 0.91 }
+      ],
+      "quality": {
+        "snr_db": 21.5,
+        "overlap_pct": 2.1,
+        "speech_prob": 0.97
+      }
+    }
+  ]
+}
+```
+
+Normative rules:
+- speaker segments MUST use master-timeline time references
+- `identity_id` MAY be omitted or unresolved if identity is unknown
+- confidence SHOULD be normalized to a predictable scale such as 0..1
+- quality fields MAY be present
+
+---
+
+### 7.3 Face tracks
+
+Example:
+
+```json
+{
+  "face_tracks": [
+    {
+      "track_id": "face:01",
+      "identity_id": "p:markus",
+      "segments": [
+        { "t_start": 15.0, "t_end": 44.0, "confidence": 0.91 }
+      ],
+      "quality": {
+        "blur_score": 0.12,
+        "occlusion_pct": 5.0,
+        "frontal_score": 0.87,
+        "face_size_pct": 8.4
+      }
+    }
+  ]
+}
+```
+
+Normative rules:
+- face tracks SHOULD be time-aligned to the master timeline
+- confidence and quality metrics MAY be included
+- face identity linking MAY remain unresolved if unknown
+
+---
+
+## 8. Annotation and notes layer
+
+### 8.1 Motivation
+
+Machine-extracted content is not the only useful knowledge layer.
+
+Human and machine-added notes may include:
+- notes
+- summaries
+- corrections
+- links
+- highlights
+- questions
+- hypotheses
+
+These MUST NOT overwrite the source-derived data.
+
+---
+
+### 8.2 Annotations
+
+Example:
 
 ```json
 {
   "annotations": [
     {
-      "annotation_id": "anno_001",
-      "type": "correction",
-      "target": {
-        "type": "transcript",
-        "segment_id": "seg_001"
-      },
-      "author_type": "human",
-      "author_id": "user_123",
-      "timestamp": "2025-01-16T10:00:00Z",
-      "content": {
-        "original": "SVAF",
-        "corrected": "S-V-A-F",
-        "reason": "Akronym sollte buchstabiert werden"
-      }
-    },
-    {
-      "annotation_id": "anno_002",
-      "type": "summary",
-      "target": {
-        "type": "event",
-        "event_id": "evt_001"
-      },
-      "author_type": "machine",
-      "author_id": "gpt-4",
-      "timestamp": "2025-01-16T12:00:00Z",
-      "content": {
-        "summary": "Einführung in SVAF-Container-Struktur",
-        "confidence": 0.89
-      }
-    },
-    {
-      "annotation_id": "anno_003",
-      "type": "tag",
-      "target": {
-        "type": "timerange",
-        "start_time": 120.0,
-        "end_time": 245.0
-      },
-      "author_type": "human",
-      "author_id": "user_456",
-      "tags": ["wichtig", "für-prüfung"]
+      "id": "ann:001",
+      "type": "note",
+      "author": "p:markus",
+      "created_utc": "2026-02-02T18:40:00Z",
+      "lang": "de",
+      "targets": [
+        { "type": "time_range", "start": 140.0, "end": 160.0 }
+      ],
+      "content": "Hier erklärt der Sprecher die Kernaussage des Modells.",
+      "confidence": 0.95,
+      "version": 1
     }
   ]
 }
 ```
 
-**Annotation-Typen:**
-- `correction`: Transkript-Korrektur
-- `summary`: Zusammenfassung
-- `tag`: Freitext-Tags
-- `comment`: Kommentar
-- `highlight`: Markierung
+Annotation types MAY include:
+- `note`
+- `summary`
+- `correction`
+- `question`
+- `link`
+- `highlight`
+- `hypothesis`
+
+Normative rules:
+- annotations MUST be separable from source-derived transcript/event data
+- annotations SHOULD support language tagging
+- annotations SHOULD explicitly reference their targets
+- annotations MAY be human-authored or machine-authored
 
 ---
 
-## 4. Keyframes
+## 9. Versioning of knowledge
 
-### 4.1 Typen
+### 9.1 Principle
 
-| Typ | Beschreibung | Format | Auflösung |
-|-----|--------------|--------|-----------|
-| **Slides** | Folienwechsel | JPEG/PNG | Original (z.B. 1920x1080) |
-| **Faces** | Mood-Change | JPEG | 512x512 (Crop) |
-| **ROI** | Charts/Code | PNG | Variable (1:1 Crop) |
-| **Scene** | Szenenwechsel | JPEG | Thumbnail (640x360) |
+SVAF distinguishes between:
+- **immutable source-derived data** such as audio and extracted events
+- **versionable knowledge layers** such as annotations, summaries, and corrections
 
-### 4.2 Naming Convention
+### 9.2 Implications
 
-```
-keyframes/
-├── slide_001.jpg           # Folie 1
-├── slide_002_roi_001.png   # ROI aus Folie 2
-├── face_speaker1_001.jpg   # Sprecher 1, erstes Keyframe
-├── face_speaker1_002.jpg   # Sprecher 1, Mood-Change
-└── roi_123.png             # ROI mit Event-ID
-```
+- Raw source artifacts SHOULD be treated as immutable once generated for a given pipeline version.
+- Annotation-like content SHOULD be versionable.
+- Implementations MAY keep revisions inline or in separate history structures.
+- Future RFCs MAY define a formal revision model.
 
-**Pattern:**
-- `{type}_{identifier}_{number}.{ext}`
-- `type`: `slide`, `face`, `roi`, `scene`
-- `identifier`: Speaker-ID, Slide-Nummer, Event-ID
-- `number`: Laufnummer (3-stellig, zero-padded)
-
-### 4.3 Wann Keyframes speichern?
-
-| Situation | Keyframe? | Grund |
-|-----------|-----------|-------|
-| Folienwechsel | ✅ Immer | Core-Feature |
-| Face Mood-Change | ✅ Ja | Semantisch relevant |
-| Face pro Segment | ❌ Nein | Redundant (außer bei Stimmungswechsel) |
-| ROI (Chart/Code) | ✅ Ja | Wichtige Info |
-| Szenenwechsel | ⚠️ Optional | Bei signifikanter Änderung |
-| Talking Head (statisch) | ❌ Nein | 1x bei `face.appearance` reicht |
-
----
-
-## 5. Proxy-Video (Optional)
-
-Für schnelles Scrubbing/Preview.
-
-```
-proxy/
-└── proxy_360p.mp4   # H.264, 360p, 500 kbps
-```
-
-**Eigenschaften:**
-- Auflösung: 360p oder 480p
-- Codec: H.264 (Kompatibilität)
-- Bitrate: 300-500 kbps
-- Framerate: 15-30 fps
-- Audio: Mono, 64 kbps
-
-**Alternativen:**
-- Nur Keyframe-Slideshow (kein Video)
-- Link zu Cloud-Video (YouTube/Vimeo)
-- Gar kein Proxy (bei Podcasts)
-
----
-
-## 6. RAG-Integration
-
-SVAF ist optimiert für **Retrieval-Augmented Generation**.
-
-### 6.1 Chunking-Strategien
-
-| Strategie | Chunk-Größe | Use Case |
-|-----------|-------------|----------|
-| **Segment-basiert** | 1 Transcript-Segment | Frage-Antwort |
-| **Event-basiert** | 1 Event | Themen-Suche |
-| **Sliding Window** | 30s überlappend | Context-Suche |
-| **Topic-basiert** | 1 Topic-Change-Event | Kapitel-Suche |
-
-### 6.2 Metadaten für RAG
+Example revision object:
 
 ```json
 {
-  "chunk_id": "chunk_001",
-  "source": "video.svaf",
-  "type": "transcript_segment",
-  "start_time": 120.5,
-  "end_time": 145.2,
-  "speaker": "Max Mustermann",
-  "topic": "Container-Struktur",
-  "language": "de",
-  "text": "SVAF verwendet einen Ordner-Container...",
-  "keyframe_url": "keyframes/slide_001.jpg",
-  "embedding": [0.123, -0.456, ...]
-}
-```
-
-### 6.3 Suchindex
-
-Empfohlene Felder für Volltextsuche:
-- `transcript[].text` (Volltext)
-- `events[].metadata.title` (Folientitel)
-- `events[].metadata.ocr_text` (OCR von Slides)
-- `events[].metadata.keywords` (Topic-Keywords)
-
----
-
-## 7. Versionierung & Git
-
-SVAF ist **Git-freundlich** durch:
-
-1. **Ordner-Container** (nicht ZIP)
-2. **JSON-Dateien** (textbasiert, diffbar)
-3. **Separate Keyframes** (binär, aber wenige Änderungen)
-4. **Proxy optional** (kann in `.gitignore`)
-
-### 7.1 `.gitignore` Template
-
-```gitignore
-# Optional: Proxy-Videos
-proxy/
-
-# Optional: Große Original-Dateien
-*.mp4
-*.mov
-
-# Build-Artefakte
-__pycache__/
-*.pyc
-```
-
-### 7.2 Versionierungs-Workflow
-
-```bash
-# Initial Commit
-git init
-git add metadata.json events.json transcript_de.json keyframes/
-git commit -m "feat: initial SVAF container"
-
-# Transkript-Korrektur
-git add transcript_de.json
-git commit -m "fix: correct speaker attribution in seg_042"
-
-# Neue Sprache hinzufügen
-git add transcript_en.json
-git commit -m "feat: add English translation"
-```
-
----
-
-## 8. Erweiterbarkeit
-
-SVAF ist **modular** erweiterbar:
-
-### 8.1 Core vs. Extensions vs. Sidecar
-
-| Kategorie | Beschreibung | Beispiel |
-|-----------|--------------|----------|
-| **Core** | Pflicht für alle SVAF-Container | `metadata.json`, `events.json` |
-| **Extensions** | Standardisierte optionale Features | `identities.json`, `tracks.json` |
-| **Sidecar** | Projekt-spezifische Zusatzdaten | `quiz_questions.json`, `sentiment.json` |
-
-### 8.2 Custom Event-Typen
-
-Erweiterungen können eigene Event-Typen definieren:
-
-```json
-{
-  "event_id": "evt_quiz_001",
-  "type": "quiz.question",
-  "start_time": 300.0,
-  "metadata": {
-    "question": "Was ist SVAF?",
-    "answers": ["A", "B", "C"],
-    "correct": "A"
-  }
-}
-```
-
-### 8.3 Sidecar-Dateien
-
-Beliebige JSON-Dateien im `sidecar/`-Ordner:
-
-```
-sidecar/
-├── quiz_questions.json
-├── sentiment_analysis.json
-├── advertising_markers.json
-└── custom_tags.json
-```
-
-**Regeln:**
-- Nicht im Core-Spec definiert
-- Können referenzieren: `event_id`, `segment_id`, Timestamps
-- Sollten dokumentiert sein (README im Sidecar-Ordner)
-
----
-
-## 9. Validierung
-
-SVAF-Container müssen folgende Regeln erfüllen:
-
-### 9.1 Pflicht-Dateien
-
-✅ `metadata.json` existiert
-✅ `events.json` existiert
-✅ Mind. 1 `transcript_XX.json` existiert
-
-### 9.2 Konsistenz-Checks
-
-✅ Alle `keyframe`-Pfade in `events.json` existieren
-✅ Alle `identity_id` in `events.json` existieren in `identities.json`
-✅ Alle `speaker_id` in `transcript_XX.json` existieren in `identities.json`
-✅ `events[].start_time` < `events[].end_time`
-✅ Keine überlappenden Events desselben Typs (außer erlaubt)
-
-### 9.3 JSON-Schema
-
-Verfügbar unter `schemas/*.schema.json` (siehe RFC-0002).
-
----
-
-## 10. Sicherheit & Privacy
-
-### 10.1 Face-Keyframes
-
-**Problem:** Gesichter sind personenbezogene Daten (DSGVO).
-
-**Lösungen:**
-1. **Privacy-Mode** in `identities.json`:
-   - `public`: Bilder erlaubt
-   - `pseudonymous`: Nur mit Einwilligung
-   - `anonymous`: Keine Bilder
-
-2. **Redacted Faces**:
-   ```json
-   {
-     "identity_id": "speaker_1",
-     "privacy_mode": "redacted",
-     "face_keyframes": [],
-     "metadata": {
-       "face_detection": "disabled_by_user"
-     }
-   }
-   ```
-
-3. **Blur-Option**:
-   Keyframes mit Weichzeichner (`keyframes/face_speaker1_001_blurred.jpg`)
-
-### 10.2 OCR & PII
-
-**Warnung:** OCR-Text aus Slides kann sensitive Daten enthalten (z.B. Email-Adressen, Kundendaten).
-
-**Best Practice:**
-- `events[].metadata.ocr_text_redacted` für öffentliche Versionen
-- PII-Scanner vor Veröffentlichung
-
-### 10.3 Source-Informationen
-
-**Problem:** `metadata.source.original_file` könnte interne Pfade leaken.
-
-**Lösung:**
-```json
-{
-  "source": {
-    "type": "video",
-    "original_file": "video.mp4",  // Relativ oder Basename
-    "original_path_redacted": true
+  "annotation_id": "ann:001",
+  "revision": 2,
+  "updated_utc": "2026-02-05T09:12:00Z",
+  "changes": {
+    "content": "Präzisierte Kernaussage des Modells."
   }
 }
 ```
 
 ---
 
-## 11. Performance & Speicherbedarf
+## 10. Metrics extension
 
-### 11.1 Typische Größen
+### 10.1 Rationale
 
-| Inhalt | Dauer | SVAF-Größe | Original-Video |
-|--------|-------|------------|----------------|
-| Podcast (Audio-only) | 60 min | 5-10 MB | ~50 MB (MP3) |
-| Talking Head (statisch) | 30 min | 20-30 MB | ~500 MB (MP4) |
-| Vortrag mit Slides | 60 min | 50-100 MB | ~1.5 GB (MP4) |
-| Interview (2 Sprecher) | 90 min | 80-150 MB | ~2 GB (MP4) |
+Some analysis pipelines produce metrics useful for:
+- filtering
+- quality control
+- confidence-aware retrieval
+- debugging
+- analytics
 
-**Faktoren:**
-- Anzahl Slides (größter Faktor)
-- Face-Keyframes (optional)
-- Word-level timestamps (2-3x größere Transkripte)
-- Proxy-Video (optional, +50-100 MB)
-
-### 11.2 Optimierungen
-
-1. **Keyframe-Kompression:**
-   - JPEG Quality 85 (statt 95)
-   - WebP statt JPEG (30% kleiner)
-
-2. **Transcript-Kompression:**
-   - Weglassen von `words[]` wenn nicht benötigt
-   - Gzip-Kompression für JSON-Dateien (außerhalb Container)
-
-3. **Proxy-Video:**
-   - Nur wenn UI-Preview benötigt
-   - 360p statt 480p
-   - H.264 statt H.265 (Kompatibilität)
+However, raw model-specific tensors or embeddings should not bloat the core format.
 
 ---
 
-## 12. Implementierungs-Hinweise
+### 10.2 Core-level aggregated metrics
 
-### 12.1 Empfohlene Tools
+The following aggregated metrics are considered reasonable for inclusion in core or near-core structures:
 
-| Task | Tool | Alternativen |
-|------|------|--------------|
-| **Transkription** | Whisper (large-v3) | AssemblyAI, Deepgram |
-| **Slide-Detection** | OpenCV (Diff) | FFmpeg Scene-Detection |
-| **Speaker-Diarization** | pyannote.audio | NVIDIA NeMo |
-| **Face-Detection** | MediaPipe | OpenCV DNN |
-| **OCR** | Tesseract, PaddleOCR | Google Vision API |
-| **ROI-Detection** | YOLO (custom) | Manuelle Bbox-Annotation |
+Voice:
+- `snr_db`
+- `speech_prob`
+- `overlap_pct`
+- `loudness_lufs`
+- `diarization_confidence`
 
-### 12.2 Pipeline-Architektur
+Face:
+- `blur_score`
+- `occlusion_pct`
+- `face_size_pct`
+- `frontal_score`
+- `tracking_confidence`
 
+These metrics:
+- SHOULD remain compact
+- SHOULD be interpretable across implementations
+- SHOULD avoid vendor lock-in where possible
+
+---
+
+### 10.3 Sidecar metrics and embeddings
+
+More detailed model outputs SHOULD be stored outside the core JSON structures.
+
+Reference locations:
+- `metrics/`
+- `embeddings/`
+
+Examples:
+- frame-level scores
+- embedding vectors
+- model-specific confidence tensors
+- experiment outputs
+
+Normative guidance:
+- detailed metrics SHOULD be externalized
+- biometric sidecars SHOULD be protected according to privacy metadata
+- players MUST NOT require model-specific sidecars for baseline interoperability
+
+---
+
+## 11. Privacy and biometrics (Normative)
+
+### 11.1 Motivation
+
+SVAF may contain identity-related and biometric-adjacent data:
+- speaker assignments
+- face tracks
+- voice metrics
+- face or voice embeddings in sidecars
+
+Therefore privacy metadata is an explicit part of the format design.
+
+---
+
+### 11.2 Example privacy metadata
+
+```json
+{
+  "svaf:privacy.mode": "pseudonymous",
+  "svaf:privacy.biometrics": "sidecar_encrypted",
+  "svaf:privacy.consent": "explicit",
+  "svaf:privacy.retention_days": 365
+}
 ```
-Input (video.mp4)
-  │
-  ├─> Audio-Extraktion (FFmpeg)
-  │     └─> Transkription (Whisper)
-  │           └─> Speaker-Diarization (pyannote)
-  │
-  ├─> Keyframe-Extraktion
-  │     ├─> Slide-Detection (OpenCV)
-  │     ├─> Face-Detection (MediaPipe)
-  │     └─> ROI-Detection (YOLO)
-  │
-  └─> Event-Generierung
-        └─> SVAF-Container schreiben
-```
 
-### 12.3 MVP-Scope
+Recommended privacy values MAY include:
+- `none`
+- `pseudonymous`
+- `encrypted`
+- `sidecar_encrypted`
 
-**Phase 1** (MVP):
-- ✅ Audio-Transkription (Whisper)
-- ✅ Slide-Detection (OpenCV Diff)
-- ✅ Basic Events (`slide.change`, `topic.change`)
-- ✅ JSON-Export
-
-**Phase 2**:
-- ⬜ Speaker-Diarization
-- ⬜ Face-Tracking
-- ⬜ OCR für Slides
-- ⬜ ROI-Detection
-
-**Phase 3**:
-- ⬜ Multi-Language Transcripts
-- ⬜ RAG-Integration (LangChain)
-- ⬜ Annotations-UI
-- ⬜ Git-Workflow
+Normative rules:
+- implementations handling biometric sidecars SHOULD expose privacy state clearly
+- players and tools SHOULD respect privacy-related metadata
+- sidecar biometric data SHOULD be encrypted or otherwise protected where required
 
 ---
 
-## 13. Offene Fragen & Zukünftige RFCs
+## 12. Search and indexing (Normative)
 
-### RFC-0002: JSON-Schema
-- Vollständige Schema-Definitionen
-- Validierungs-Rules
-- Test-Suite
+### 12.1 Searchable sources
 
-### RFC-0003: ROI-Detection
-- Automatische Erkennung von Charts/Code
-- Manuelle Annotation-Tools
-- Bbox-Format
+A conforming SVAF ecosystem SHOULD support search across:
+- transcripts in all available languages
+- annotations
+- slide OCR or equivalent extracted text
+- identity and context tags
 
-### RFC-0004: Multi-Track Audio
-- Separate Audio-Spuren
-- Stereo-Tracks
-- Background-Music-Separation
+### 12.2 Search behavior
 
-### RFC-0005: Streaming-Support
-- Live-Transkription
-- Inkrementelle Events
-- Delta-Updates
+A conforming SVAF player SHOULD provide:
+- keyword search
+- phrase search
+- timestamped results
+- filters by speaker, slide, and time range where data is available
 
-### RFC-0006: Komprimierung
-- Container-Archivierung (ZIP vs. TAR)
-- JSON-Kompression
-- Deduplizierung von Keyframes
+Optional advanced filters MAY include:
+- language
+- event type
+- confidence threshold
+- topic state
 
----
+### 12.3 Index storage
 
-## 14. Änderungshistorie
+Search indexes MAY be:
+- built on the fly
+- shipped as part of the session in `index/`
 
-| Version | Datum | Änderungen |
-|---------|-------|------------|
-| 0.1 | 2025-01-10 | Initial Draft |
-| 0.2 | 2025-01-12 | Hinzufügen von `identities.json` |
-| 0.3 | 2025-01-14 | Privacy-Modi, ROI-Events |
-| 0.4 | 2025-01-15 | Annotations, RAG-Hinweise, Git-Workflow |
+Reference implementation candidates include:
+- SQLite FTS
+- other local inverted-index approaches
+
+Index files are OPTIONAL but recommended for large sessions or collections.
 
 ---
 
-## 15. Lizenz & Nutzung
+## 13. RAG integration model
 
-**Spec-Lizenz:** CC-BY-4.0 (Dokumentation frei nutzbar)
-**Implementierung:** TBD (vorgeschlagen: MIT oder Apache 2.0)
+### 13.1 Primary intention
+
+SVAF is designed to make audiovisual media directly usable for retrieval and context injection.
+
+### 13.2 Retrieval units
+
+Retrieval units SHOULD be derived from natural structures such as:
+- transcript segments
+- speaker segments
+- slide intervals
+- annotation targets
+- event-bounded topic segments
+
+### 13.3 Chunking philosophy
+
+SVAF avoids hardcoding a single chunking strategy into the base format.
+
+Instead:
+- the source remains semantically structured
+- retrieval systems derive chunks dynamically
+- provenance remains intact
+
+Every retrieved chunk SHOULD be traceable to:
+- time range
+- speaker or identity if available
+- active slide or event context if available
+- source transcript language
+- confidence or quality metadata where relevant
 
 ---
 
-**Kontakt:**
-- GitHub: TBD
-- Email: TBD
-- Discord: TBD
+## 14. Storage efficiency considerations
 
-**Mitwirkende:**
-- Markus (Konzept & Design)
-- Claude Sonnet 4.5 (Co-Autor, Struktur)
+A typical two-hour lecture-oriented session may result in approximately:
+
+| Artifact | Typical Size |
+|---|---:|
+| audio.opus | 40–80 MB |
+| proxy.mkv | 50–200 MB |
+| slides / keyframes | 1–10 MB |
+| transcript + annotations | < 5 MB |
+| events + metadata | < 1 MB |
+
+This can preserve the large majority of knowledge value for many RAG and search use cases while using only a fraction of the storage of continuous high-quality video.
 
 ---
 
-*Ende RFC SVAF-0001*
+## 15. Player model (Non-normative overview)
+
+A reference SVAF player is expected to be:
+- read-only
+- event-driven
+- audio-centered
+- search-first
+
+Suggested UI tracks:
+- audio
+- transcript
+- slides
+- speaker / identity
+- optional face / mood
+- proxy video
+
+Key interactions:
+- click search result → jump to time
+- click transcript word or segment → play audio
+- click slide → view visual evidence
+- filter by speaker, slide, time, language
+
+The player is a **view over SVAF data**, not the authoritative source of semantics.
+
+---
+
+## 16. Compatibility and extensibility
+
+SVAF is designed for forward compatibility.
+
+Normative guidance:
+- unknown event types MUST be ignored gracefully
+- unknown tags MUST be ignored gracefully
+- optional files MAY be absent
+- future RFCs MAY standardize additional components without breaking baseline readers
+
+---
+
+## 17. Essence
+
+> SVAF does not primarily store what a viewer sees frame by frame.  
+> SVAF stores what is relevant, when it is relevant, and why it matters.
+
+> SVAF is not a movie format.  
+> SVAF is a knowledge extraction and representation format for audiovisual sources.
+
+---
+
+## 18. Planned follow-up RFCs
+
+- **RFC-0002:** SVAF JSON Schema
+- **RFC-0003:** SVAF Query and Retrieval Model
+- **RFC-0004:** SVAF Reference Encoder / Converter
+- **RFC-0005:** SVAF Player Specification
