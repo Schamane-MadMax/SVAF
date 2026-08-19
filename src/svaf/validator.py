@@ -4,6 +4,13 @@ Level 1 (schema): Pflicht-Dateien vorhanden, jede JSON-Datei validiert gegen
 ihr normatives Schema aus ``schemas/`` — Verstöße sind Fehler.
 Level 2 (referential): IDs und Asset-Pfade lösen auf — Verstöße sind Warnungen.
 Level 3 (semantic): Zeiten sind plausibel — Verstöße sind Warnungen.
+
+Bewusste Lücke: RFC-0002 §3 nennt als Level-3-Prüfung auch "Segmentzeiten
+innerhalb der Audio-Dauer"; metadata.json führt im As-built-Format keine
+Dauer, daher ist diese Prüfung derzeit nicht umsetzbar.
+
+Schema-invalide Dateien werden von Level 2/3 ausgenommen — deren Inhalt ist
+nicht vertrauenswürdig genug für Folgeprüfungen.
 """
 from __future__ import annotations
 
@@ -23,6 +30,7 @@ CORE_FILES: dict[str, bool] = {
     "identities": False,
     "ocr": False,
     "embeddings": False,
+    "annotations": False,
 }
 REQUIRED_ASSETS = ("audio.opus",)
 LEVELS = ("schema", "referential", "semantic")
@@ -53,13 +61,16 @@ class ValidationResult:
 
 
 def _find_schema_dir() -> Path:
-    """Sucht schemas/: Env-Variable, dann Repo-Layout relativ zum Paket."""
+    """Sucht schemas/: Env-Variable, Paket-Kopie, dann Repo-Layout."""
     env = os.environ.get("SVAF_SCHEMA_DIR")
     if env:
         return Path(env)
-    candidate = Path(__file__).resolve().parent.parent.parent / "schemas"
-    if candidate.is_dir():
-        return candidate
+    packaged = Path(__file__).resolve().parent / "schemas"
+    if packaged.is_dir():
+        return packaged
+    repo = Path(__file__).resolve().parent.parent.parent / "schemas"
+    if repo.is_dir():
+        return repo
     raise FileNotFoundError(
         "schemas/ nicht gefunden — schema_dir angeben oder SVAF_SCHEMA_DIR setzen"
     )
@@ -112,10 +123,13 @@ class SVAFValidator:
             except (json.JSONDecodeError, UnicodeDecodeError) as e:
                 result.error(f.name, "", f"kein gültiges JSON: {e}")
                 continue
+            file_errors = 0
             for err in self._validator_for(name).iter_errors(parsed):
                 json_path = "/".join(str(p) for p in err.path) or "(root)"
                 result.error(f.name, json_path, err.message)
-            data[name] = parsed
+                file_errors += 1
+            if file_errors == 0:
+                data[name] = parsed
         return data
 
     # -- Level 2 ---------------------------------------------------------
@@ -150,36 +164,46 @@ class SVAFValidator:
                             f"Asset {asset!r} fehlt im Container")
 
         for track_ref in data.get("embeddings", {}).get("tracks", {}):
-            if identity_ids and track_ref not in identity_ids:
+            if track_ref not in identity_ids:
                 result.warn("embeddings.json", f"tracks/{track_ref}",
                             f"identity {track_ref!r} existiert nicht in identities.json")
 
     # -- Level 3 ---------------------------------------------------------
 
     def _level_semantic(self, data: dict[str, dict], result: ValidationResult) -> None:
+        def num(value: object, default: float) -> float:
+            return value if isinstance(value, (int, float)) else default
+
         for t_idx, track in enumerate(data.get("tracks", {}).get("speaker_tracks", [])):
+            prev_start = -1.0
             for s_idx, seg in enumerate(track.get("segments", [])):
                 path = f"speaker_tracks/{t_idx}/segments/{s_idx}"
-                if seg.get("t_end", 0) < seg.get("t_start", 0):
+                t_start = num(seg.get("t_start"), 0.0)
+                if num(seg.get("t_end"), 0.0) < t_start:
                     result.warn("tracks.json", path,
                                 f"t_end ({seg.get('t_end')}) liegt vor "
                                 f"t_start ({seg.get('t_start')})")
+                if t_start < prev_start:
+                    result.warn("tracks.json", path,
+                                "Track-Segmente nicht monoton sortiert")
+                prev_start = t_start
 
         for v_idx, variant in enumerate(data.get("transcript", {}).get("transcripts", [])):
             prev_start = -1.0
             for s_idx, seg in enumerate(variant.get("segments", [])):
                 path = f"transcripts/{v_idx}/segments/{s_idx}"
-                if seg.get("end", 0) < seg.get("start", 0):
+                start = num(seg.get("start"), 0.0)
+                if num(seg.get("end"), 0.0) < start:
                     result.warn("transcript.json", path,
                                 "Segment-end liegt vor Segment-start")
-                if seg.get("start", 0) < prev_start:
+                if start < prev_start:
                     result.warn("transcript.json", path,
                                 "Segmente nicht monoton sortiert")
-                prev_start = seg.get("start", 0)
+                prev_start = start
 
         prev_t = -1.0
         for idx, event in enumerate(data.get("events", {}).get("events", [])):
-            t = event.get("t", 0)
+            t = num(event.get("t"), 0.0)
             if t < prev_t:
                 result.warn("events.json", f"events/{idx}",
                             "Events nicht chronologisch sortiert")

@@ -27,8 +27,12 @@ def cli() -> None:
               help="Pfad zu den normativen Schemas (Default: Repo-Layout/SVAF_SCHEMA_DIR)")
 def validate(container_path: str, level: str, strict: bool, schema_dir: str | None) -> None:
     """Validiert einen SVAF-Container gegen die normativen JSON-Schemas."""
-    validator = SVAFValidator(schema_dir=schema_dir)
-    result = validator.validate(container_path, level=level)
+    try:
+        validator = SVAFValidator(schema_dir=schema_dir)
+        result = validator.validate(container_path, level=level)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        click.echo(f"Schema-Fehler: {e}", err=True)
+        sys.exit(1)
 
     for issue in result.errors + result.warnings:
         click.echo(f"{issue.severity.upper():7s} {issue.file} {issue.path}: {issue.message}")
@@ -54,7 +58,11 @@ def info(container_path: str) -> None:
     if not meta_file.is_file():
         click.echo("metadata.json fehlt", err=True)
         sys.exit(1)
-    meta = json.loads(meta_file.read_text())
+    try:
+        meta = json.loads(meta_file.read_text())
+    except json.JSONDecodeError as e:
+        click.echo(f"metadata.json ist kein gültiges JSON: {e}", err=True)
+        sys.exit(1)
 
     click.echo(f"svaf_version: {meta.get('svaf_version', '?')}")
     click.echo(f"source:       {meta.get('source', '?')}")
@@ -64,9 +72,16 @@ def info(container_path: str) -> None:
                f"biometrics={privacy.get('biometrics', '?')} "
                f"consent={privacy.get('consent', '?')}")
 
+    def load(f: Path) -> dict:
+        try:
+            return json.loads(f.read_text())
+        except json.JSONDecodeError:
+            click.echo(f"{f.name}: kein gültiges JSON — übersprungen", err=True)
+            return {}
+
     transcript_file = root / "transcript.json"
     if transcript_file.is_file():
-        transcript = json.loads(transcript_file.read_text())
+        transcript = load(transcript_file)
         langs = ", ".join(v.get("lang", "?") for v in transcript.get("transcripts", []))
         segments = sum(len(v.get("segments", [])) for v in transcript.get("transcripts", []))
         click.echo(f"transcript:   {langs} "
@@ -78,9 +93,9 @@ def info(container_path: str) -> None:
                       ("identities", "identities"), ("ocr", "slides")]:
         f = root / f"{name}.json"
         if f.is_file():
-            counts.append(f"{name}={len(json.loads(f.read_text()).get(key, []))}")
+            counts.append(f"{name}={len(load(f).get(key, []))}")
     if (root / "embeddings.json").is_file():
-        emb = json.loads((root / "embeddings.json").read_text())
+        emb = load(root / "embeddings.json")
         counts.append(f"embeddings={len(emb.get('tracks', {}))} (BIOMETRIC)")
     if counts:
         click.echo("inventory:    " + ", ".join(counts))
