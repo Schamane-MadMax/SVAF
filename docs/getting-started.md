@@ -1,4 +1,4 @@
-> **Veraltet / Outdated:** Dieses Dokument beschreibt noch das Ideal-Format vor dem Reality-first-Umbau. Maßgeblich sind [RFC-0001 v0.5](rfcs/RFC-0001-core.md) und die [JSON-Schemas](../schemas/). Beispiele hier validieren NICHT gegen die aktuellen Schemas.
+> **Veraltet / Outdated:** Dieses Dokument beschreibt noch das Ideal-Format vor dem Reality-first-Umbau. Maßgeblich sind [RFC-0001 v0.5](rfcs/RFC-0001-core.md) und die [JSON-Schemas](../schemas/). Beispiele hier validieren NICHT gegen die aktuellen Schemas, und die hier gezeigte Builder-/Parser-API (SVAFBuilder, SVAFParser, SVAFContainer) wurde entfernt — aktuelle Nutzung siehe src/README.md.
 
 # Getting Started with SVAF
 

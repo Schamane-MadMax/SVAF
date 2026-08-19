@@ -14,7 +14,13 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
   einzigen Konsumenten; ein handgepflegtes Parallelmodell zur Schema-Suite
   wäre die nächste Drift-Quelle (Historie behält die alten Stände).
   Abhängigkeiten: pydantic/python-dateutil raus, click deklariert
-  (wurde benutzt, fehlte); Paketversion 0.5.0.
+  (wurde benutzt, fehlte); Paketversion 0.5.0. Nach Code-Review gehärtet:
+  schema-invalide Dateien sind von Level 2/3 ausgenommen (kein Crash mehr),
+  None-sichere Zeitvergleiche, Track-Monotonie-Prüfung, annotations.json
+  wird mitvalidiert, saubere CLI-Fehlermeldungen statt Tracebacks, Schemas
+  werden ins Paket mitinstalliert (Symlink src/svaf/schemas), CI testet
+  3.9 und 3.12. Referenz-Fixture privacy-konsistent (biometrics=present +
+  consent=given, da Embeddings enthalten sind).
 - Repo in die GitHub-Organisation `svaf-project` transferiert; alle
   Projekt-URLs (pyproject, README, CITATION, CONTRIBUTING,
   getting-started, CoC-Meldeweg) auf `svaf-project/SVAF` umgestellt.

@@ -100,6 +100,8 @@ def parse_transcript(
     pass
 ```
 
+> **Hinweis:** Die unten referenzierte Builder-/Parser-API wurde entfernt; aktueller Stand: `src/README.md`.
+
 ### Testing
 
 - **Minimum 90% code coverage**
@@ -167,6 +169,8 @@ RFC Template: `docs/rfcs/RFC-TEMPLATE.md`
 - **Add examples** for new features
 - **Update changelog** (`CHANGELOG.md`)
 - **Document breaking changes**
+
+> **Hinweis:** Die unten referenzierte Builder-/Parser-API wurde entfernt; aktueller Stand: `src/README.md`.
 
 ## Testing
 
