@@ -1,31 +1,11 @@
-"""SVAF - Semantic Video Analysis Format
+"""SVAF — Semantic Video Analysis Format.
 
-A Python library for creating and parsing SVAF containers.
+Referenz-Werkzeug: schema-getriebener Container-Validator plus CLI.
+Die normative Formatdefinition sind die JSON-Schemas in ``schemas/``
+(RFC-0002); diese Bibliothek hält bewusst kein paralleles Datenmodell vor.
 """
 
-__version__ = "0.1.0"
+from svaf.validator import Issue, SVAFValidator, ValidationResult
 
-from svaf.parser import SVAFParser
-from svaf.builder import SVAFBuilder
-from svaf.validator import SVAFValidator
-from svaf.models import (
-    SVAFContainer,
-    Metadata,
-    Event,
-    Transcript,
-    TranscriptSegment,
-    Identity,
-)
-
-__all__ = [
-    "SVAFParser",
-    "SVAFBuilder",
-    "SVAFValidator",
-    "SVAFContainer",
-    "Metadata",
-    "Event",
-    "Transcript",
-    "TranscriptSegment",
-    "Identity",
-    "__version__",
-]
+__version__ = "0.5.0"
+__all__ = ["SVAFValidator", "ValidationResult", "Issue", "__version__"]
