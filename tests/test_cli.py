@@ -56,3 +56,34 @@ def test_info_shows_metadata(runner: CliRunner) -> None:
     assert result.exit_code == 0, result.output
     assert "0.4" in result.output
     assert "de" in result.output
+
+
+# -- Review-Befunde (Fehlerpfade) ---------------------------------------
+
+
+def test_validate_with_bad_schema_dir_reports_cleanly(
+    runner: CliRunner, tmp_path: Path
+) -> None:
+    empty = tmp_path / "leer"
+    empty.mkdir()
+    result = runner.invoke(cli, ["validate", str(ASBUILT), "--schema-dir", str(empty)])
+    assert result.exit_code == 1
+    assert "Traceback" not in result.output
+    assert "schema" in result.output.lower()
+
+
+def test_info_with_broken_metadata_reports_cleanly(
+    runner: CliRunner, tmp_path: Path
+) -> None:
+    dst = tmp_path / "session.svaf"
+    shutil.copytree(ASBUILT, dst)
+    (dst / "metadata.json").write_text("{kaputt")
+    result = runner.invoke(cli, ["info", str(dst)])
+    assert result.exit_code == 1
+    assert "Traceback" not in result.output
+
+
+def test_info_names_transcript_language(runner: CliRunner) -> None:
+    result = runner.invoke(cli, ["info", str(ASBUILT)])
+    assert "primary de" in result.output
+    assert "svaf_version: 0.4" in result.output
