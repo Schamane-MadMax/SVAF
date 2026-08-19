@@ -68,9 +68,22 @@ def info(container_path: str) -> None:
     click.echo(f"source:       {meta.get('source', '?')}")
     click.echo(f"created_utc:  {meta.get('created_utc', '?')}")
     privacy = meta.get("privacy") or {}
+    has_biometrics = (root / "embeddings.json").is_file() or (root / "embeddings").is_dir()
+    biometrics = privacy.get("biometrics")
+    consent = privacy.get("consent")
+    if has_biometrics:
+        # RFC-0001 §11.3: fehlende Angaben bei vorhandener Biometrie zaehlen
+        # als present bzw. unknown (fail-closed)
+        if biometrics is None:
+            biometrics = "present (angenommen, RFC-0001 §11.3)"
+        if consent is None:
+            consent = "unknown (angenommen, RFC-0001 §11.3)"
     click.echo(f"privacy:      mode={privacy.get('mode', '?')} "
-               f"biometrics={privacy.get('biometrics', '?')} "
-               f"consent={privacy.get('consent', '?')}")
+               f"biometrics={biometrics or '?'} "
+               f"consent={consent or '?'}")
+    if has_biometrics and not str(consent).startswith("given"):
+        click.echo("privacy:      WARNUNG — biometrische Artefakte ohne "
+                   "erklaerten Consent (Fail-closed-Regel, RFC-0001 §11.3)")
 
     def load(f: Path) -> dict:
         try:

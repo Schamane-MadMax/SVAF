@@ -87,3 +87,19 @@ def test_info_names_transcript_language(runner: CliRunner) -> None:
     result = runner.invoke(cli, ["info", str(ASBUILT)])
     assert "primary de" in result.output
     assert "svaf_version: 0.4" in result.output
+
+
+def test_info_applies_fail_closed_defaults(runner: CliRunner, tmp_path: Path) -> None:
+    """§11.3: fehlt biometrics/consent bei vorhandenen Embeddings, muss info
+    die normativen Annahmen (present/unknown) ausweisen statt '?'."""
+    dst = tmp_path / "session.svaf"
+    shutil.copytree(ASBUILT, dst)
+    meta = json.loads((dst / "metadata.json").read_text())
+    meta["privacy"] = {"mode": "pseudonymous"}
+    (dst / "metadata.json").write_text(json.dumps(meta))
+
+    result = runner.invoke(cli, ["info", str(dst)])
+    assert result.exit_code == 0
+    assert "present (angenommen" in result.output
+    assert "unknown (angenommen" in result.output
+    assert "11.3" in result.output
