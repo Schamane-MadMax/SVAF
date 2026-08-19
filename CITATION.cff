@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you reference the SVAF specification, please cite it as below."
+title: "SVAF – Semantic Video Analysis Format"
+type: software
+authors:
+  - name: "Schamane-MadMax"
+repository-code: "https://github.com/Schamane-MadMax/SVAF"
+license: MIT
+version: "0.5"
+date-released: "2026-08-19"
+abstract: >-
+  An event-based, audio-first format for converting audiovisual media into
+  structured, searchable, storage-efficient, and RAG-ready knowledge
+  representations. Defined by RFC-0001 (core specification) and RFC-0002
+  (JSON Schema suite).
