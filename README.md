@@ -1,5 +1,9 @@
 # SVAF – Semantic Video Analysis Format
 
+[![tests](https://github.com/Schamane-MadMax/SVAF/actions/workflows/tests.yml/badge.svg)](https://github.com/Schamane-MadMax/SVAF/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Spec](https://img.shields.io/badge/spec-v0.5%20draft-orange.svg)](docs/rfcs/RFC-0001-core.md)
+
 > Transform audio and video into machine-readable knowledge.
 
 SVAF is an **event-based, audio-first format** for converting audiovisual media
@@ -79,9 +83,16 @@ and `retention_days` fields, and RFC-0001 section 11 defines a fail-closed rule
 for biometric sidecars without consent. Operators of SVAF pipelines remain
 responsible for GDPR compliance (see RFC-0001 section 11.3).
 
+## Contributing and security
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md), including
+its privacy rules (no real personal data in examples or fixtures). Security
+and privacy weaknesses: please report privately, see [SECURITY.md](SECURITY.md).
+
 ## License
 
 Code and specification: MIT — see [LICENSE](LICENSE).
+To cite the specification, see [CITATION.cff](CITATION.cff).
 
 ## Vision
 
