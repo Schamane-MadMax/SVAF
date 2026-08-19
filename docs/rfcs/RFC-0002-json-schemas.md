@@ -33,6 +33,7 @@ All schemas use JSON Schema draft 2020-12.
 | `tracks.schema.json` | `tracks.json` | optional, recommended |
 | `identities.schema.json` | `identities.json` | optional, recommended |
 | `ocr.schema.json` | `ocr.json` | optional |
+| `embeddings.schema.json` | `embeddings.json` | optional; biometric (RFC-0001 §11) |
 | `annotations.schema.json` | `annotations.json` | specified, not yet produced |
 
 `annotations.schema.json` describes a component of RFC-0001 (section 8) that no
@@ -56,7 +57,9 @@ RFC-0001 section 4) are intentionally not schema-governed.
 - **Timestamps:** All times are seconds (number, ≥ 0) on the master audio
   timeline.
 - **Format version:** `svaf_version` uses `major.minor` (e.g. `"0.4"`), not
-  three-part SemVer.
+  three-part SemVer. Containers produced by the current reference pipeline
+  carry `"0.4"`; RFC document versions track the specification text, not the
+  container format version.
 
 ---
 
@@ -81,6 +84,8 @@ Documented as-built quirks that schemas deliberately tolerate:
 
 - `identities[].tags` is canonically an object with string values; existing
   containers also contain an empty array, which MUST be read as "no tags".
+- `embeddings.tracks[].centroid` may be `null` when a track had no usable
+  speech; readers MUST treat such tracks as having no embedding.
 
 ---
 
@@ -89,8 +94,9 @@ Documented as-built quirks that schemas deliberately tolerate:
 - Schemas evolve with the format version in RFC-0001. A change that makes
   previously valid containers invalid requires a new `svaf_version` minor bump
   and an RFC changelog entry.
-- Each schema carries a stable `$id`. Consumers SHOULD pin schemas by
-  repository tag, not by `$id` URL (no hosted schema endpoint exists).
+- Each schema carries a stable `$id` in URN form (`urn:svaf:schemas:<name>`).
+  Consumers SHOULD pin schemas by repository tag; no hosted schema endpoint
+  exists.
 
 ---
 
