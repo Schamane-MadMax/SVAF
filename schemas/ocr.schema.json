@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://svaf.org/schemas/ocr.schema.json",
+  "title": "SVAF OCR Schema",
+  "description": "Schema for OCR results of slide keyframes (as built, format version 0.x)",
+  "type": "object",
+  "required": ["slides"],
+  "properties": {
+    "slides": {
+      "type": "array",
+      "description": "One entry per OCR-processed slide keyframe",
+      "items": {
+        "type": "object",
+        "required": ["asset", "text"],
+        "properties": {
+          "asset": {
+            "type": "string",
+            "description": "Relative path of the keyframe, e.g. slides/0001.webp"
+          },
+          "text": {
+            "type": "string",
+            "description": "Recognized text (may be empty)"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
