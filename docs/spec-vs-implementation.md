@@ -1,7 +1,7 @@
 # Spec vs. Implementierung — Divergenz-Analyse (Stand 2026-08-19)
 
 Abgleich zwischen RFC-0001 v0.4 / RFC-0002 v1.0 (Schemas) und dem Format, das die
-youtube_mirror-Pipeline (`src/processors/svaf_*.py`) tatsächlich in Produktion schreibt.
+produktive Referenz-Implementierung tatsächlich schreibt.
 Datenbasis: drei reale Produktions-Sessions (Archiv-Storage), validiert mit
 `jsonschema` (Draft 2020-12) gegen `schemas/*.schema.json`.
 
@@ -79,7 +79,7 @@ Schema existiert, Datei wird von keiner Implementierung erzeugt.
 
 ## Konsequenz
 
-Eine öffentliche Spec, deren einzige produktive Implementierung (~10.000 Sessions)
+Eine öffentliche Spec, deren einzige produktive Implementierung
 jede Kerndatei anders schreibt, ist nicht glaubwürdig. Vor der Veröffentlichung muss
 entweder die Spec das As-built-Format beschreiben oder die Abweichung ausdrücklich
 als Migrationspfad dokumentiert sein. Entscheidung siehe RFC-0001 v0.5 (Changelog).
