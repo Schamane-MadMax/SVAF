@@ -2,100 +2,67 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://svaf.org/schemas/transcript.schema.json",
   "title": "SVAF Transcript Schema",
-  "description": "Schema for SVAF transcripts",
+  "description": "Schema for the multilingual transcript layer (as built, format version 0.x)",
   "type": "object",
-  "required": ["language", "format_version", "segments"],
+  "required": [
+    "primary_language",
+    "transcripts"
+  ],
   "properties": {
-    "language": {
+    "primary_language": {
       "type": "string",
-      "pattern": "^[a-z]{2}$",
-      "description": "Language code (ISO 639-1)"
+      "description": "ISO 639-1 code of the primary spoken language",
+      "pattern": "^[a-z]{2,3}$"
     },
-    "format_version": {
-      "type": "string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+$",
-      "description": "Transcript format version"
-    },
-    "segments": {
+    "transcripts": {
       "type": "array",
+      "description": "One entry per language variant (ASR output or translation)",
+      "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["segment_id", "start_time", "end_time", "text"],
+        "required": ["lang", "source", "segments"],
         "properties": {
-          "segment_id": {
+          "lang": {
             "type": "string",
-            "pattern": "^seg_\\d+$",
-            "description": "Unique segment identifier"
+            "pattern": "^[a-z]{2,3}$"
           },
-          "start_time": {
-            "type": "number",
-            "minimum": 0,
-            "description": "Segment start time in seconds"
-          },
-          "end_time": {
-            "type": "number",
-            "minimum": 0,
-            "description": "Segment end time in seconds"
-          },
-          "speaker_id": {
+          "source": {
             "type": "string",
-            "description": "Reference to speaker identity"
+            "description": "Provenance of this variant, e.g. asr, translation, manual"
           },
-          "text": {
+          "model": {
             "type": "string",
-            "minLength": 1,
-            "description": "Transcript text"
+            "description": "Model identifier that produced this variant"
           },
-          "confidence": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1,
-            "description": "Transcription confidence score"
-          },
-          "words": {
+          "segments": {
             "type": "array",
-            "description": "Optional word-level timestamps",
             "items": {
               "type": "object",
-              "required": ["word", "start", "end"],
+              "required": ["start", "end", "text"],
               "properties": {
-                "word": {
-                  "type": "string"
-                },
-                "start": {
-                  "type": "number",
-                  "minimum": 0
-                },
-                "end": {
-                  "type": "number",
-                  "minimum": 0
-                },
-                "confidence": {
-                  "type": "number",
-                  "minimum": 0,
-                  "maximum": 1
+                "start": { "type": "number", "minimum": 0 },
+                "end": { "type": "number", "minimum": 0 },
+                "text": { "type": "string" },
+                "words": {
+                  "type": "array",
+                  "description": "Optional word-level timing",
+                  "items": {
+                    "type": "object",
+                    "required": ["w", "start", "end"],
+                    "properties": {
+                      "w": { "type": "string" },
+                      "start": { "type": "number", "minimum": 0 },
+                      "end": { "type": "number", "minimum": 0 },
+                      "prob": { "type": "number", "minimum": 0, "maximum": 1 }
+                    }
+                  }
                 }
               }
             }
           }
         }
       }
-    },
-    "metadata": {
-      "type": "object",
-      "properties": {
-        "transcription_engine": {
-          "type": "string",
-          "description": "Engine used for transcription"
-        },
-        "transcription_date": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "word_level_timestamps": {
-          "type": "boolean"
-        }
-      }
     }
-  }
+  },
+  "additionalProperties": true
 }
