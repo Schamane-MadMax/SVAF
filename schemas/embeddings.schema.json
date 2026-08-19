@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:svaf:schemas:embeddings",
+  "title": "SVAF Embeddings Schema",
+  "description": "Schema for per-speaker voice embeddings (as built, format version 0.x). BIOMETRIC DATA: subject to the fail-closed rule of RFC-0001 section 11.3.",
+  "type": "object",
+  "required": ["model", "dim", "tracks"],
+  "properties": {
+    "model": {
+      "type": "string",
+      "description": "Embedding model identifier"
+    },
+    "dim": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Dimensionality of the embedding vectors"
+    },
+    "overlap_excluded": {
+      "type": "boolean",
+      "description": "Whether overlapping speech was excluded when computing centroids"
+    },
+    "tracks": {
+      "type": "object",
+      "description": "One entry per identity id (identities.json), e.g. p:spk_01",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["centroid"],
+        "properties": {
+          "centroid": {
+            "type": ["array", "null"],
+            "items": { "type": "number" },
+            "description": "Mean embedding vector of length dim; null when no usable speech was available for this track"
+          },
+          "speech_sec": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Total speech duration the centroid is based on"
+          },
+          "n_segments": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of segments the centroid is based on"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
