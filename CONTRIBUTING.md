@@ -100,8 +100,6 @@ def parse_transcript(
     pass
 ```
 
-> **Hinweis:** Die unten referenzierte Builder-/Parser-API wurde entfernt; aktueller Stand: `src/README.md`.
-
 ### Testing
 
 - **Minimum 90% code coverage**
@@ -115,11 +113,11 @@ def parse_transcript(
 Example:
 
 ```python
-def test_parser_handles_missing_transcript():
-    """Test that parser handles containers without transcripts."""
-    parser = SVAFParser()
-    container = parser.parse("minimal.svaf")
-    assert container.transcripts == {}
+def test_validator_reports_missing_transcript():
+    """Ein Container ohne transcript.json muss einen Fehler liefern."""
+    result = SVAFValidator().validate("session.svaf")
+    assert not result.is_valid
+    assert any(i.file == "transcript.json" for i in result.errors)
 ```
 
 ### Commit Messages
@@ -169,8 +167,6 @@ RFC Template: `docs/rfcs/RFC-TEMPLATE.md`
 - **Add examples** for new features
 - **Update changelog** (`CHANGELOG.md`)
 - **Document breaking changes**
-
-> **Hinweis:** Die unten referenzierte Builder-/Parser-API wurde entfernt; aktueller Stand: `src/README.md`.
 
 ## Testing
 

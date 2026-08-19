@@ -1,0 +1,8 @@
+graft schemas
+graft tests
+graft docs/rfcs
+include CHANGELOG.md
+include LICENSE
+include README.md
+include SECURITY.md
+global-exclude __pycache__ *.py[cod]

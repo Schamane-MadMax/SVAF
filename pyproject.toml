@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "svaf"
 version = "0.5.0"
-description = "Semantic Video Analysis Format - Python library for creating and parsing SVAF containers"
+description = "Semantic Video Analysis Format - schema-driven validator and inspector for SVAF containers"
 readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
@@ -60,9 +60,6 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 addopts = [
-    "--cov=svaf",
-    "--cov-report=term-missing",
-    "--cov-report=html",
     "--strict-markers",
 ]
 

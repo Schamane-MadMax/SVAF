@@ -4,6 +4,12 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
 
 ## [Unreleased]
 
+### Breaking
+- Public API der Python-Lib entfernt: `SVAFBuilder`, `SVAFParser`,
+  `SVAFContainer` und `svaf.models` existieren nicht mehr (nie auf PyPI
+  veröffentlicht, kein bekannter Konsument; Stände in der Git-Historie).
+  Neue API: `svaf.SVAFValidator` / `ValidationResult` / `Issue`.
+
 ### Geändert
 - **Python-Lib auf As-built ausgerichtet (Architekten-Schnitt, Option
   "Validator statt Parallelmodell")**: `svaf validate` wendet jetzt wirklich
