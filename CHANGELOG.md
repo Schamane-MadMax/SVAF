@@ -11,6 +11,8 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
   Die alte URL leitet weiter.
 
 ### Hinzugefügt
+- Logo (`docs/assets/logo.svg` + PNG) und GitHub-Social-Preview-Bild;
+  Logo im README eingebunden.
 - Repo-Hygiene für den öffentlichen Betrieb: `SECURITY.md` (privater
   Meldeweg, ausdrücklich auch für Privacy-Schwächen im Format),
   Privacy-Regeln in `CONTRIBUTING.md` (keine echten Personendaten in

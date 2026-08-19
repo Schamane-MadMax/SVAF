@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/logo.svg" alt="SVAF logo" width="160">
+</p>
+
 # SVAF – Semantic Video Analysis Format
 
 [![tests](https://github.com/svaf-project/SVAF/actions/workflows/tests.yml/badge.svg)](https://github.com/svaf-project/SVAF/actions/workflows/tests.yml)
