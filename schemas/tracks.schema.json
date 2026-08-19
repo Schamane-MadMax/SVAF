@@ -2,68 +2,57 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://svaf.org/schemas/tracks.schema.json",
   "title": "SVAF Tracks Schema",
-  "description": "Schema for SVAF multi-track audio (extension)",
+  "description": "Schema for speaker (and future face) tracks (as built, format version 0.x)",
   "type": "object",
-  "required": ["tracks"],
+  "required": ["speaker_tracks"],
   "properties": {
-    "tracks": {
+    "speaker_tracks": {
       "type": "array",
+      "description": "One entry per diarized speaker",
       "items": {
         "type": "object",
-        "required": ["track_id", "type", "language"],
+        "required": ["track_id", "segments"],
         "properties": {
           "track_id": {
             "type": "string",
-            "pattern": "^track_\\d+$",
-            "description": "Unique track identifier"
+            "description": "Stable track identifier, e.g. spk:01"
           },
-          "type": {
+          "identity_id": {
             "type": "string",
-            "enum": ["audio", "video", "subtitle"],
-            "description": "Track type"
-          },
-          "language": {
-            "type": "string",
-            "pattern": "^[a-z]{2}$",
-            "description": "Track language (ISO 639-1)"
+            "description": "Reference to identities.json (id)"
           },
           "label": {
             "type": "string",
-            "description": "Human-readable label"
+            "description": "Raw diarization label, e.g. SPEAKER_00 from RTTM"
           },
-          "file_path": {
-            "type": "string",
-            "description": "Relative path to track file"
+          "segments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["t_start", "t_end"],
+              "properties": {
+                "t_start": { "type": "number", "minimum": 0 },
+                "t_end": { "type": "number", "minimum": 0 }
+              }
+            }
           },
-          "codec": {
-            "type": "string",
-            "description": "Audio/video codec"
-          },
-          "channels": {
-            "type": "integer",
-            "minimum": 1,
-            "description": "Audio channels (1=mono, 2=stereo)"
-          },
-          "sample_rate": {
-            "type": "integer",
-            "minimum": 0,
-            "description": "Audio sample rate in Hz"
-          },
-          "bitrate": {
-            "type": "integer",
-            "minimum": 0,
-            "description": "Bitrate in bps"
-          },
-          "default": {
-            "type": "boolean",
-            "description": "Default track flag"
-          },
-          "metadata": {
+          "quality": {
             "type": "object",
+            "description": "Provenance and quality metadata",
+            "properties": {
+              "source": { "type": "string" }
+            },
             "additionalProperties": true
           }
-        }
+        },
+        "additionalProperties": true
       }
+    },
+    "face_tracks": {
+      "type": "array",
+      "description": "Reserved for face tracks (RFC-0001 section 7.3, not yet produced)",
+      "items": { "type": "object" }
     }
-  }
+  },
+  "additionalProperties": true
 }
