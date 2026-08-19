@@ -5,6 +5,16 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
 ## [Unreleased]
 
 ### Geändert
+- **Python-Lib auf As-built ausgerichtet (Architekten-Schnitt, Option
+  "Validator statt Parallelmodell")**: `svaf validate` wendet jetzt wirklich
+  die normativen JSON-Schemas an (RFC-0002 §3, Level 1–3: Schema-Fehler,
+  Referenz- und Semantik-Warnungen, `--strict`); `svaf info` inspiziert
+  Container inkl. Privacy-Status und Biometrie-Hinweis. `builder.py`,
+  `parser.py`, `models.py` samt Tests entfernt — Ideal-Format ohne einen
+  einzigen Konsumenten; ein handgepflegtes Parallelmodell zur Schema-Suite
+  wäre die nächste Drift-Quelle (Historie behält die alten Stände).
+  Abhängigkeiten: pydantic/python-dateutil raus, click deklariert
+  (wurde benutzt, fehlte); Paketversion 0.5.0.
 - Repo in die GitHub-Organisation `svaf-project` transferiert; alle
   Projekt-URLs (pyproject, README, CITATION, CONTRIBUTING,
   getting-started, CoC-Meldeweg) auf `svaf-project/SVAF` umgestellt.

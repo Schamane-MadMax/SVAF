@@ -1,20 +1,26 @@
-# SVAF Reference Library (Python)
+# SVAF Reference Tooling (Python)
 
-**Status:** predates the reality-first alignment of the schemas (RFC-0001 v0.5)
-and is being reworked. In particular, `svaf validate` does not yet apply the
-JSON schemas — see the repository README and CHANGELOG.
+Deliberately small: the JSON Schemas in `../schemas/` are the single source
+of truth for the format; this package only checks containers against them.
 
 ## Structure
 
 ```
 src/
 └── svaf/
-    ├── models.py     # Pydantic models (old ideal format)
-    ├── builder.py    # Container builder
-    ├── parser.py     # Container parsing
-    ├── validator.py  # Presence/syntax checks (schema application pending)
-    └── cli.py        # svaf command-line interface
+    ├── validator.py  # schema-driven validation (RFC-0002 §3, levels 1–3)
+    └── cli.py        # svaf validate / svaf info
 ```
 
-For validating containers against the normative schemas today, use the
-`jsonschema` snippet in RFC-0002 section 6.
+## Usage
+
+```bash
+pip install -e .
+svaf validate path/to/session.svaf            # levels 1–3, warnings tolerated
+svaf validate path/to/session.svaf --strict   # warnings fail the run
+svaf info path/to/session.svaf
+```
+
+Container construction and a parsing object model are intentionally not part
+of this package until a real consumer exists (see CHANGELOG); earlier drafts
+of such code remain available in the git history.
