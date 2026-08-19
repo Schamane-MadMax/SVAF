@@ -111,6 +111,7 @@ A reference SVAF session is represented as a directory:
 ├── ocr.json               (optional)
 ├── slides/                (optional)
 ├── proxy.mkv              (optional)
+├── embeddings.json        (optional; BIOMETRIC, see section 11)
 ├── annotations.json       (specified, not yet produced)
 ├── faces/                 (specified, not yet produced)
 ├── metrics/               (specified, not yet produced)
@@ -121,6 +122,10 @@ A reference SVAF session is represented as a directory:
 Notes:
 - `audio.opus`, `transcript.json`, `events.json`, and `metadata.json` are REQUIRED.
 - `ocr.json` contains extracted text per slide keyframe (see schemas/ocr.schema.json).
+- `embeddings.json` contains per-speaker voice embedding centroids
+  (see schemas/embeddings.schema.json). It is biometric data: the fail-closed
+  rule of section 11.3 applies to this file exactly as to the `embeddings/`
+  directory.
 - Components marked "specified, not yet produced" are part of this specification
   but are not written by any known implementation yet; readers MUST NOT rely on
   their presence.
@@ -619,7 +624,7 @@ additionally override the container-level state per identity:
 ```json
 {
   "svaf:privacy.mode": "pseudonymous",
-  "svaf:privacy.consent": "explicit"
+  "svaf:privacy.consent": "given"
 }
 ```
 
@@ -641,7 +646,14 @@ Normative rules:
   Encryption is a protective measure (Art. 32 GDPR), not a legal basis.
 - **Fail-closed rule:** If `privacy.biometrics` is `present` and
   `privacy.consent` is not `given`, conforming tools MUST NOT create, export,
-  or retain biometric sidecars (`embeddings/`, face crops) for that container.
+  or retain biometric artifacts (`embeddings.json`, `embeddings/`, face crops)
+  for that container. A missing `privacy` block or an unknown `biometrics`
+  value MUST be treated as `present` whenever biometric artifacts exist in
+  the container.
+- **Redaction before publication:** `metadata.source` is a free-form path or
+  URI and may leak internal storage layout; OCR text in `ocr.json` may contain
+  incidental personal data (e-mail addresses, names on slides). Containers
+  intended for publication SHOULD have `source` redacted and OCR text screened.
 - `mode: pseudonymous` data remains personal data (GDPR Recital 26). Only
   `anonymous` containers fall outside the GDPR's scope.
 - When `privacy.biometrics` is `present`, `retention_days` SHOULD be set to a
