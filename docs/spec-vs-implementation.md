@@ -100,4 +100,22 @@ Podcast und unvollständige Läufe) — **0 Validierungsfehler** (`jsonschema`
 Die Produktions-Container sind privat; im Repo reproduzierbar ist die
 Validierung über die synthetische Fixture `tests/fixtures/asbuilt.svaf/`
 (`pytest tests/test_schemas.py`). Weiterhin offen: `annotations.json` bleibt
-Zielformat ohne Implementierung; die Python-Lib ist noch nicht umgestellt.
+Zielformat ohne Implementierung.
+
+## Bekanntes Compliance-Problem der Referenz-Pipeline (offen)
+
+Die Referenz-Pipeline schreibt in `metadata.json` nur
+`privacy: {"mode": "pseudonymous"}` — ohne `biometrics`, `consent` und
+`retention_days` — erzeugt aber zugleich `embeddings.json`
+(Stimm-Embedding-Zentroide, biometrienah). Nach RFC-0001 §11.3 gilt ein
+fehlendes `biometrics`-Feld bei vorhandenen biometrischen Artefakten als
+`present` und fehlendes `consent` als `unknown`; konforme Werkzeuge dürften
+diese Embeddings damit nicht erzeugen oder behalten. **Die Referenz-Pipeline
+verletzt hier die Fail-closed-Regel ihrer eigenen Spezifikation.** `svaf info`
+weist diesen Zustand seit dem Lib-Umbau ausdrücklich aus.
+
+Die synthetische Fixture `asbuilt.svaf` bildet bewusst den *konformen*
+Zielzustand ab (`biometrics: present`, `consent: given`,
+`retention_days: 365`) — sie ist Vorbild, nicht Abbild dieses Fehlers. Die
+Behebung in der Pipeline (ehrliche Deklaration bzw. Kopplung der
+Embedding-Ablage an Consent) steht aus.
