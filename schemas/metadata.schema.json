@@ -2,121 +2,115 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://svaf.org/schemas/metadata.schema.json",
   "title": "SVAF Metadata Schema",
-  "description": "Schema for SVAF container metadata",
+  "description": "Schema for SVAF container metadata (as built, format version 0.x)",
   "type": "object",
   "required": [
     "svaf_version",
-    "container_id",
-    "title",
-    "duration_seconds",
-    "primary_language",
-    "creation_date"
+    "source",
+    "created_utc"
   ],
   "properties": {
     "svaf_version": {
       "type": "string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+$",
-      "description": "SVAF specification version (semver)"
-    },
-    "container_id": {
-      "type": "string",
-      "format": "uuid",
-      "description": "Unique container identifier"
-    },
-    "title": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Container title"
-    },
-    "description": {
-      "type": "string",
-      "description": "Optional description"
-    },
-    "duration_seconds": {
-      "type": "number",
-      "minimum": 0,
-      "description": "Content duration in seconds"
-    },
-    "primary_language": {
-      "type": "string",
-      "pattern": "^[a-z]{2}$",
-      "description": "Primary language (ISO 639-1)"
-    },
-    "languages": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "pattern": "^[a-z]{2}$"
-      },
-      "description": "All available languages"
-    },
-    "creation_date": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Container creation timestamp (ISO 8601)"
-    },
-    "last_modified": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Last modification timestamp (ISO 8601)"
+      "description": "SVAF format version (major.minor)",
+      "pattern": "^\\d+\\.\\d+$"
     },
     "source": {
-      "type": "object",
-      "required": ["type"],
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["video", "audio", "podcast", "stream"],
-          "description": "Source type"
-        },
-        "original_file": {
-          "type": "string",
-          "description": "Original filename"
-        },
-        "original_duration": {
-          "type": "number",
-          "minimum": 0
-        },
-        "original_resolution": {
-          "type": "string",
-          "pattern": "^\\d+x\\d+$"
-        },
-        "original_size_bytes": {
-          "type": "integer",
-          "minimum": 0
-        }
-      }
-    },
-    "authors": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["name", "role"],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "role": {
-            "type": "string",
-            "enum": ["creator", "editor", "transcriber", "annotator"]
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          }
-        }
-      }
-    },
-    "tags": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Content tags"
-    },
-    "license": {
       "type": "string",
-      "description": "Content license (e.g., CC-BY-4.0)"
+      "description": "Path or URI of the source media file"
+    },
+    "created_utc": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Creation timestamp of the container (UTC)"
+    },
+    "audio": {
+      "type": "object",
+      "description": "Master audio encoding parameters",
+      "properties": {
+        "codec": { "type": "string" },
+        "sample_rate_hz": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "proxy": {
+      "type": "object",
+      "description": "Optional proxy video encoding parameters",
+      "properties": {
+        "codec": { "type": "string" },
+        "fps": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "asr": {
+      "type": "object",
+      "description": "ASR engine configuration used for transcript.json",
+      "properties": {
+        "model": { "type": "string" },
+        "device": { "type": "string" },
+        "compute": { "type": "string" }
+      }
+    },
+    "diarization": {
+      "type": "object",
+      "description": "Speaker diarization configuration",
+      "properties": {
+        "enabled": { "type": "boolean" }
+      }
+    },
+    "speaker_events": {
+      "type": "object",
+      "description": "Parameters for deriving speaker_change events",
+      "properties": {
+        "change_gap_sec": { "type": "number", "minimum": 0 }
+      }
+    },
+    "index": {
+      "type": "object",
+      "description": "Local search index configuration",
+      "properties": {
+        "enabled": { "type": "boolean" }
+      }
+    },
+    "slides": {
+      "type": "object",
+      "description": "Slide keyframe extraction configuration",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "interval_sec": { "type": "number", "exclusiveMinimum": 0 },
+        "diff_threshold": { "type": "number", "minimum": 0, "maximum": 1 },
+        "min_gap_sec": { "type": "number", "minimum": 0 }
+      }
+    },
+    "ocr": {
+      "type": "object",
+      "description": "OCR configuration for slide keyframes",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "lang": { "type": "string" }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "description": "Container-level privacy metadata (RFC-0001 section 11)",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["public", "pseudonymous", "anonymous", "restricted"]
+        },
+        "biometrics": {
+          "type": "string",
+          "enum": ["absent", "present", "encrypted"]
+        },
+        "consent": {
+          "type": "string",
+          "enum": ["unknown", "given", "denied", "not_required"]
+        },
+        "retention_days": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        }
+      }
     }
-  }
+  },
+  "additionalProperties": true
 }
