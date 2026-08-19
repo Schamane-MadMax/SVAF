@@ -9,5 +9,5 @@
   "index": {"enabled": false},
   "slides": {"enabled": true, "interval_sec": 1.0, "diff_threshold": 0.2, "min_gap_sec": 2.0},
   "ocr": {"enabled": true, "lang": "deu+eng"},
-  "privacy": {"mode": "pseudonymous", "biometrics": "absent", "consent": "unknown", "retention_days": null}
+  "privacy": {"mode": "pseudonymous", "biometrics": "present", "consent": "given", "retention_days": 365}
 }
