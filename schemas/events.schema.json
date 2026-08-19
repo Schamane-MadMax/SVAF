@@ -2,51 +2,47 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://svaf.org/schemas/events.schema.json",
   "title": "SVAF Events Schema",
-  "description": "Schema for SVAF event timeline",
+  "description": "Schema for the semantic event timeline (as built, format version 0.x)",
   "type": "object",
   "required": ["events"],
   "properties": {
     "events": {
       "type": "array",
+      "description": "Chronological list of semantic events",
       "items": {
         "type": "object",
-        "required": ["event_id", "type", "start_time"],
+        "required": ["t", "type"],
         "properties": {
-          "event_id": {
-            "type": "string",
-            "pattern": "^[a-z_]+_\\d+$",
-            "description": "Unique event identifier (e.g., evt_001)"
+          "t": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Event time in seconds relative to the master audio"
           },
           "type": {
             "type": "string",
-            "pattern": "^[a-z_]+\\.[a-z_]+$",
-            "description": "Event type (namespace.action, e.g., slide.change)"
+            "description": "Flat event type, e.g. state_start, speaker_change, slide_start; unknown types MUST be ignored by readers",
+            "pattern": "^[a-z][a-z0-9_]*$"
           },
-          "start_time": {
-            "type": "number",
-            "minimum": 0,
-            "description": "Start time in seconds"
-          },
-          "end_time": {
-            "type": "number",
-            "minimum": 0,
-            "description": "End time in seconds (optional for instant events)"
-          },
-          "keyframe": {
+          "state": {
             "type": "string",
-            "description": "Relative path to keyframe image"
+            "description": "For state_* events: name of the state"
+          },
+          "speaker_track": {
+            "type": "string",
+            "description": "For speaker_change events: track_id from tracks.json"
           },
           "identity_id": {
             "type": "string",
-            "description": "Reference to identity (speaker/face)"
+            "description": "For speaker_change events: id from identities.json"
           },
-          "metadata": {
-            "type": "object",
-            "description": "Event-specific metadata",
-            "additionalProperties": true
+          "asset": {
+            "type": "string",
+            "description": "For slide_start events: relative path of the keyframe asset"
           }
-        }
+        },
+        "additionalProperties": true
       }
     }
-  }
+  },
+  "additionalProperties": true
 }
