@@ -1,14 +1,17 @@
-# Spec vs. Implementierung — Divergenz-Analyse (Stand 2026-08-19)
+# Spec vs. Implementierung — Divergenz-Analyse
+
+**Historisches Befund-Dokument (2026-08-19).** Es beschreibt den Zustand VOR
+RFC-0001 v0.5 / RFC-0002 v1.1 und begründet den Reality-first-Umbau. Der
+Zustand NACH dem Umbau steht am Ende des Dokuments.
 
 Abgleich zwischen RFC-0001 v0.4 / RFC-0002 v1.0 (Schemas) und dem Format, das die
-produktive Referenz-Implementierung tatsächlich schreibt.
-Datenbasis: drei reale Produktions-Sessions (Archiv-Storage), validiert mit
+produktive Referenz-Implementierung tatsächlich schreibt, validiert mit
 `jsonschema` (Draft 2020-12) gegen `schemas/*.schema.json`.
 
-**Ergebnis: Alle fünf Kerndateien scheitern in allen drei Sessions an den Schemas.**
-Die Spec beschreibt ein Ideal-Format, das keine Implementierung je geschrieben hat.
-Die Python-Lib in `src/svaf/` implementiert das Ideal-Format, wird in der Pipeline
-aber nicht verwendet.
+**Befund damals: Alle fünf Kerndateien scheiterten in allen geprüften Sessions
+an den v1.0-Schemas.** Die Spec beschrieb ein Ideal-Format, das keine
+Implementierung je geschrieben hat. Die Python-Lib in `src/svaf/` implementiert
+das Ideal-Format, wird in der Pipeline aber nicht verwendet.
 
 ## Datei-Inventar
 
@@ -83,3 +86,18 @@ Eine öffentliche Spec, deren einzige produktive Implementierung
 jede Kerndatei anders schreibt, ist nicht glaubwürdig. Vor der Veröffentlichung muss
 entweder die Spec das As-built-Format beschreiben oder die Abweichung ausdrücklich
 als Migrationspfad dokumentiert sein. Entscheidung siehe RFC-0001 v0.5 (Changelog).
+
+## Stand nach dem Umbau (2026-08-19)
+
+Die Schemas wurden auf das As-built-Format umgestellt (RFC-0002 v1.1) und
+anschließend unabhängig verifiziert: 238 vorhandene JSON-Dateien (`metadata`,
+`transcript`, `events`, `tracks`, `identities`, `ocr`) aus 65 realen
+Produktions-Sessions (5 gezielt + 60 zufällig gezogen, darunter Audio-only,
+Podcast und unvollständige Läufe) — **0 Validierungsfehler** (`jsonschema`
+4.26.0, Draft 2020-12). Dabei entdeckt und nachgezogen: `embeddings.json`
+(real erzeugt, war unspezifiziert) inklusive `centroid: null`-Fall.
+
+Die Produktions-Container sind privat; im Repo reproduzierbar ist die
+Validierung über die synthetische Fixture `tests/fixtures/asbuilt.svaf/`
+(`pytest tests/test_schemas.py`). Weiterhin offen: `annotations.json` bleibt
+Zielformat ohne Implementierung; die Python-Lib ist noch nicht umgestellt.

@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
 authors = [
-    {name = "Schamane-MadMax", email = "Schamane-MadMax@users.noreply.github.com"}
+    {name = "Schamane-MadMax", email = "57435670+Schamane-MadMax@users.noreply.github.com"}
 ]
 keywords = ["video", "audio", "transcription", "rag", "knowledge-base"]
 classifiers = [

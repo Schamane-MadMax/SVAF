@@ -209,8 +209,6 @@ Add test containers in `tests/fixtures/`:
 ## Community
 
 - **GitHub Discussions**: For questions and ideas
-- **Discord**: (coming soon)
-- **Monthly Meetups**: (coming soon)
 
 ## License
 

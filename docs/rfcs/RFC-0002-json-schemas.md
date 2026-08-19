@@ -76,6 +76,11 @@ RFC-0001 section 4) are intentionally not schema-governed.
 Level 1 is REQUIRED for conformance. Levels 2 and 3 are RECOMMENDED and may be
 reported as warnings.
 
+Note: schema validity does not imply privacy conformance. The fail-closed rule
+of RFC-0001 section 11.3 (biometric artifacts without given consent) is a
+policy check outside the JSON Schemas; a container can be schema-valid and
+still violate it.
+
 ---
 
 ## 4. Known Format Inconsistencies

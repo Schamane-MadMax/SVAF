@@ -31,7 +31,7 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
 
 ### Nach Review (Verifier, Code-Reviewer, Rechts-Review) nachgezogen
 - `schemas/embeddings.schema.json` neu: `embeddings.json` (Stimm-Embeddings,
-  biometrisch) wird real in ~37 % der Sessions erzeugt, war aber unspezifiziert;
+  biometrisch) wird real von der Referenz-Pipeline erzeugt, war aber unspezifiziert;
   RFC-0001 Kap. 4 und Fail-closed-Regel entsprechend erweitert.
 - `annotations.schema.json` an RFC-0001 §8 angeglichen (vorher beschrieben
   Schema und RFC zwei verschiedene Zielformate).
