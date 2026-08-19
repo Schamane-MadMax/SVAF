@@ -1,0 +1,41 @@
+name: publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Sdist und Wheel bauen
+        run: |
+          pip install build twine
+          python -m build
+          twine check dist/*
+      - name: Version muss zum Release-Tag passen
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          ls "dist/svaf-${tag}.tar.gz" "dist/svaf-${tag}-py3-none-any.whl"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      # Pflicht fuer PyPI Trusted Publishing (OIDC)
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

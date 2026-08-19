@@ -40,6 +40,9 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
   Privacy-Regeln in `CONTRIBUTING.md` (keine echten Personendaten in
   Fixtures/Beispielen), PR-Template mit Datenschutz-Checkpunkt,
   Dependabot, `CITATION.cff`, CI-/Lizenz-Badges im README.
+- CI-Workflow `publish.yml`: veröffentlicht Sdist+Wheel bei einem
+  GitHub-Release automatisch auf PyPI (Trusted Publishing/OIDC, Environment
+  `pypi`, Tag-Versions-Abgleich vor dem Upload — kein API-Token im Repo).
 - `docs/examples-media-entscheid.md`: Entscheidungsnotiz, warum `examples/`
   mit echtem Audio zurückgestellt ist — geprüfte Quellen (öffentliche
   Podcasts, Prominentenstimmen, NASA, media.ccc.de) mit Ablehnungsgründen
