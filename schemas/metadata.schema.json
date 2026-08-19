@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://svaf.org/schemas/metadata.schema.json",
+  "$id": "urn:svaf:schemas:metadata",
   "title": "SVAF Metadata Schema",
   "description": "Schema for SVAF container metadata (as built, format version 0.x)",
   "type": "object",

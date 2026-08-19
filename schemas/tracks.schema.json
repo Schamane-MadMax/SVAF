@@ -1,10 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://svaf.org/schemas/tracks.schema.json",
+  "$id": "urn:svaf:schemas:tracks",
   "title": "SVAF Tracks Schema",
   "description": "Schema for speaker (and future face) tracks (as built, format version 0.x)",
   "type": "object",
-  "required": ["speaker_tracks"],
+  "anyOf": [
+    { "required": ["speaker_tracks"] },
+    { "required": ["face_tracks"] }
+  ],
   "properties": {
     "speaker_tracks": {
       "type": "array",

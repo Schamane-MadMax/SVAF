@@ -1,87 +1,59 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://svaf.org/schemas/annotations.schema.json",
+  "$id": "urn:svaf:schemas:annotations",
   "title": "SVAF Annotations Schema",
-  "description": "Schema for SVAF human and machine annotations",
+  "description": "Schema for the annotation layer (RFC-0001 section 8). Target definition: no known implementation produces this file yet.",
   "type": "object",
   "required": ["annotations"],
   "properties": {
     "annotations": {
       "type": "array",
+      "description": "Human- or machine-authored notes layered over source-derived data",
       "items": {
         "type": "object",
-        "required": ["annotation_id", "type", "target", "author_type", "timestamp"],
+        "required": ["id", "type", "content"],
         "properties": {
-          "annotation_id": {
+          "id": {
             "type": "string",
-            "pattern": "^anno_\\d+$",
-            "description": "Unique annotation identifier"
+            "description": "Stable annotation id, e.g. ann:001"
           },
           "type": {
             "type": "string",
-            "enum": ["correction", "summary", "tag", "comment", "highlight"],
-            "description": "Annotation type"
+            "enum": ["note", "summary", "correction", "question", "link", "highlight", "hypothesis"]
           },
-          "target": {
-            "type": "object",
-            "required": ["type"],
-            "properties": {
-              "type": {
-                "type": "string",
-                "enum": ["transcript", "event", "timerange", "keyframe", "container"]
-              },
-              "segment_id": {
-                "type": "string"
-              },
-              "event_id": {
-                "type": "string"
-              },
-              "start_time": {
-                "type": "number",
-                "minimum": 0
-              },
-              "end_time": {
-                "type": "number",
-                "minimum": 0
-              },
-              "keyframe_path": {
-                "type": "string"
-              }
-            }
-          },
-          "author_type": {
+          "author": {
             "type": "string",
-            "enum": ["human", "machine"],
-            "description": "Author type"
+            "description": "Identity id (identities.json) or tool identifier"
           },
-          "author_id": {
+          "created_utc": {
             "type": "string",
-            "description": "User ID or model name"
+            "format": "date-time"
           },
-          "timestamp": {
+          "lang": {
             "type": "string",
-            "format": "date-time",
-            "description": "Annotation creation time"
+            "pattern": "^[a-z]{2,3}$"
           },
-          "content": {
-            "type": "object",
-            "description": "Annotation-specific content",
-            "additionalProperties": true
-          },
-          "tags": {
+          "targets": {
             "type": "array",
+            "description": "What the annotation refers to",
             "items": {
-              "type": "string"
+              "type": "object",
+              "required": ["type"],
+              "properties": {
+                "type": { "type": "string" },
+                "start": { "type": "number", "minimum": 0 },
+                "end": { "type": "number", "minimum": 0 }
+              },
+              "additionalProperties": true
             }
           },
-          "confidence": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1,
-            "description": "Confidence score (for machine annotations)"
-          }
-        }
+          "content": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "version": { "type": "integer", "minimum": 1 }
+        },
+        "additionalProperties": true
       }
     }
-  }
+  },
+  "additionalProperties": true
 }

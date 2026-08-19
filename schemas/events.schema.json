@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://svaf.org/schemas/events.schema.json",
+  "$id": "urn:svaf:schemas:events",
   "title": "SVAF Events Schema",
   "description": "Schema for the semantic event timeline (as built, format version 0.x)",
   "type": "object",
