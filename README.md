@@ -132,7 +132,7 @@ SVAF/
 
 ## Lizenz
 
-**TBD** (vorgeschlagen: MIT oder Apache 2.0)
+MIT — siehe [LICENSE](LICENSE).
 
 ## Beitragen
 
