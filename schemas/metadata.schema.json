@@ -92,7 +92,7 @@
     "privacy": {
       "type": "object",
       "description": "Container-level privacy metadata (RFC-0001 section 11). If the block is absent, readers MUST apply the fail-closed rule of RFC-0001 section 11.3.",
-      "required": ["mode", "biometrics", "consent"],
+      "required": ["mode"],
       "properties": {
         "mode": {
           "type": "string",

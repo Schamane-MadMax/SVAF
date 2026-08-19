@@ -647,9 +647,10 @@ Normative rules:
 - **Fail-closed rule:** If `privacy.biometrics` is `present` and
   `privacy.consent` is not `given`, conforming tools MUST NOT create, export,
   or retain biometric artifacts (`embeddings.json`, `embeddings/`, face crops)
-  for that container. A missing `privacy` block or an unknown `biometrics`
-  value MUST be treated as `present` whenever biometric artifacts exist in
-  the container.
+  for that container. A missing `privacy` block, a missing `biometrics`
+  field, or an unknown `biometrics` value MUST be treated as `present`
+  whenever biometric artifacts exist in the container; a missing `consent`
+  field MUST be treated as `unknown`.
 - **Redaction before publication:** `metadata.source` is a free-form path or
   URI and may leak internal storage layout; OCR text in `ocr.json` may contain
   incidental personal data (e-mail addresses, names on slides). Containers
