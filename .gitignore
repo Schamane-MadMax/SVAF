@@ -62,3 +62,20 @@ yarn.lock
 *.whl
 *.tar.gz
 .hypothesis/
+
+# Lokale Assistenz-/Editor-Konfiguration — niemals veroeffentlichen
+.claude/
+CLAUDE.md
+.cursor/
+.cursorrules
+.aider*
+.copilot/
+.vscode/
+.idea/
+
+# Lokale Sicherungen und Secrets
+*.bundle
+.env
+.env.*
+*.key
+*.pem
