@@ -228,7 +228,7 @@ Example:
   "events": [
     { "t": 0.0, "type": "state_start", "state": "intro" },
     { "t": 83.2, "type": "slide_start", "asset": "slides/0002.webp", "roi": "screen" },
-    { "t": 146.8, "type": "mood_change", "identity_id": "p:markus" },
+    { "t": 146.8, "type": "mood_change", "identity_id": "p:speaker_a" },
     { "t": 210.0, "type": "speaker_change", "speaker_track": "spk:02", "identity_id": "p:guest01" }
   ]
 }
@@ -315,9 +315,9 @@ Example:
 {
   "identities": [
     {
-      "id": "p:markus",
+      "id": "p:speaker_a",
       "type": "person",
-      "display_name": "Markus",
+      "display_name": "Speaker A",
       "tags": {
         "svaf:identity.role": "speaker",
         "svaf:identity.language": ["de"],
@@ -373,7 +373,7 @@ Example:
   "speaker_tracks": [
     {
       "track_id": "spk:01",
-      "identity_id": "p:markus",
+      "identity_id": "p:speaker_a",
       "segments": [
         { "t_start": 12.4, "t_end": 48.9, "confidence": 0.94 },
         { "t_start": 62.1, "t_end": 98.0, "confidence": 0.91 }
@@ -405,7 +405,7 @@ Example:
   "face_tracks": [
     {
       "track_id": "face:01",
-      "identity_id": "p:markus",
+      "identity_id": "p:speaker_a",
       "segments": [
         { "t_start": 15.0, "t_end": 44.0, "confidence": 0.91 }
       ],
@@ -456,7 +456,7 @@ Example:
     {
       "id": "ann:001",
       "type": "note",
-      "author": "p:markus",
+      "author": "p:speaker_a",
       "created_utc": "2026-02-02T18:40:00Z",
       "lang": "de",
       "targets": [
@@ -627,6 +627,30 @@ Normative rules:
 - implementations handling biometric sidecars SHOULD expose privacy state clearly
 - players and tools SHOULD respect privacy-related metadata
 - sidecar biometric data SHOULD be encrypted or otherwise protected where required
+
+---
+
+### 11.3 Responsibilities and legal context (Normative)
+
+- Operators of SVAF-producing pipelines are controllers within the meaning of
+  Art. 4(7) GDPR for all identity-related data they generate. This
+  specification does not transfer, reduce, or discharge any such obligation.
+- Voice or face embeddings used for unique identification constitute
+  special-category (biometric) data under Art. 9(1) GDPR. Processing them
+  requires a legal basis under Art. 9(2) — in practice, explicit consent.
+  Encryption is a protective measure (Art. 32 GDPR), not a legal basis.
+- **Fail-closed rule:** If `privacy.biometrics` is `present` and
+  `privacy.consent` is not `given`, conforming tools MUST NOT create, export,
+  or retain biometric sidecars (`embeddings/`, face crops) for that container.
+- `mode: pseudonymous` data remains personal data (GDPR Recital 26). Only
+  `anonymous` containers fall outside the GDPR's scope.
+- When `privacy.biometrics` is `present`, `retention_days` SHOULD be set to a
+  concrete value. Deletion MUST extend to derived artifacts (embeddings, raw
+  diarization output, retrieval chunks, and vector-index entries), otherwise
+  an identity survives its own erasure.
+- Systematic biometric processing typically triggers a data protection impact
+  assessment (Art. 35(3)(b) GDPR). Data subject rights (Art. 15, 17, 20 GDPR)
+  apply to SVAF containers like to any other personal-data store.
 
 ---
 
