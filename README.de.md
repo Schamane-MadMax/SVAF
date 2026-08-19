@@ -1,3 +1,5 @@
+> **Veraltet / Outdated:** Dieses Dokument beschreibt noch das Ideal-Format vor dem Reality-first-Umbau. Maßgeblich sind [RFC-0001 v0.5](docs/rfcs/RFC-0001-core.md) und die [JSON-Schemas](schemas/). Beispiele hier validieren NICHT gegen die aktuellen Schemas.
+
 # SVAF - Semantic Video Analysis Format
 
 **Version:** 0.1.0-alpha

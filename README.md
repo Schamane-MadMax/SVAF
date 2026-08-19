@@ -31,7 +31,11 @@ slide-based recordings, interviews, meetings, audiovisual knowledge archives.
 **Draft / RFC phase.** The specification (RFC-0001 v0.5) and the JSON schemas
 (RFC-0002 v1.1) describe the format **as actually produced** by a production
 pipeline; the schemas are validated against real containers. The Python
-reference library in `src/svaf/` predates this alignment and is being reworked.
+reference library in `src/svaf/` predates this alignment and is being
+reworked — in particular, its `svaf validate` command does **not yet apply
+the JSON schemas** (it only checks file presence and JSON syntax). Until the
+rework lands, validate containers directly with the schemas as shown in
+RFC-0002 section 6.
 
 ## Repository structure
 
