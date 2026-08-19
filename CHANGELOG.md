@@ -2,7 +2,16 @@
 
 Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
 
-## [Unreleased] — Branch spec/v0.5-reality (2026-08-19)
+## [Unreleased]
+
+### Hinzugefügt
+- Repo-Hygiene für den öffentlichen Betrieb: `SECURITY.md` (privater
+  Meldeweg, ausdrücklich auch für Privacy-Schwächen im Format),
+  Privacy-Regeln in `CONTRIBUTING.md` (keine echten Personendaten in
+  Fixtures/Beispielen), PR-Template mit Datenschutz-Checkpunkt,
+  Dependabot, `CITATION.cff`, CI-/Lizenz-Badges im README.
+
+## [0.5.0] — 2026-08-19
 
 ### Geändert
 - **RFC-0001 auf v0.5**: Spec beschreibt jetzt das As-built-Format der
