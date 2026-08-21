@@ -15,7 +15,8 @@ src/
 ## Usage
 
 ```bash
-pip install -e .
+pip install svaf        # released version from PyPI
+pip install -e .        # or from a checkout, for development
 svaf validate path/to/session.svaf            # levels 1–3, warnings tolerated
 svaf validate path/to/session.svaf --strict   # warnings fail the run
 svaf info path/to/session.svaf

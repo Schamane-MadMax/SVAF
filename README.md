@@ -5,6 +5,7 @@
 # SVAF – Semantic Video Analysis Format
 
 [![tests](https://github.com/svaf-project/SVAF/actions/workflows/tests.yml/badge.svg)](https://github.com/svaf-project/SVAF/actions/workflows/tests.yml)
+[![PyPI](https://img.shields.io/pypi/v/svaf.svg)](https://pypi.org/project/svaf/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Spec](https://img.shields.io/badge/spec-v0.5%20draft-orange.svg)](docs/rfcs/RFC-0001-core.md)
 
@@ -58,6 +59,18 @@ of truth.
 ├── CHANGELOG.md
 └── LICENSE                    MIT
 ```
+
+## Install and use the validator
+
+```bash
+pip install svaf
+
+svaf validate path/to/session.svaf            # levels 1–3, warnings tolerated
+svaf validate path/to/session.svaf --strict   # warnings fail the run
+svaf info path/to/session.svaf                # inventory and privacy state
+```
+
+Requires Python 3.9 or newer. Details in [src/README.md](src/README.md).
 
 ## Documentation
 

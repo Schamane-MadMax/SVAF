@@ -4,6 +4,11 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
 
 ## [Unreleased]
 
+### Hinzugefügt
+- README: PyPI-Badge und Installationsabschnitt (`pip install svaf`);
+  `src/README.md` nennt die Installation aus PyPI neben dem
+  Entwicklungs-Setup.
+
 ## [0.5.0] — 2026-08-21
 
 Erste Veröffentlichung des Python-Pakets auf PyPI (`pip install svaf`).
