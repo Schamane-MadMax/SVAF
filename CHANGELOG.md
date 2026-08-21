@@ -4,6 +4,12 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-08-21
+
+Erste Veröffentlichung des Python-Pakets auf PyPI (`pip install svaf`).
+Enthält den Reality-first-Umbau von Spezifikation und Schemas vom
+2026-08-19 (Spec-Release `v0.5`) sowie den Umbau der Lib zum Validator.
+
 ### Breaking
 - Public API der Python-Lib entfernt: `SVAFBuilder`, `SVAFParser`,
   `SVAFContainer` und `svaf.models` existieren nicht mehr (nie auf PyPI
@@ -48,7 +54,7 @@ Alle nennenswerten Änderungen an Spezifikation, Schemas und Referenz-Lib.
   Podcasts, Prominentenstimmen, NASA, media.ccc.de) mit Ablehnungsgründen
   und die gangbaren Wege (Eigenaufnahme CC0, AMI Meeting Corpus).
 
-## [0.5.0] — 2026-08-19
+## [v0.5] — 2026-08-19 — Spec-Release (kein Paket-Release)
 
 ### Geändert
 - **RFC-0001 auf v0.5**: Spec beschreibt jetzt das As-built-Format der
