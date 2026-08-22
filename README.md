@@ -54,7 +54,7 @@ of truth.
 │   ├── rfcs/                  RFC-INDEX, RFC-0001 (core), RFC-0002 (schemas)
 │   └── spec-vs-implementation.md
 ├── schemas/                   normative JSON Schemas (draft 2020-12)
-├── src/svaf/                  Python reference library (being reworked)
+├── src/svaf/                  Python package: validator and CLI
 ├── tests/                     library tests and synthetic fixtures
 ├── CHANGELOG.md
 └── LICENSE                    MIT
